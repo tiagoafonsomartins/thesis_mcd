@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/Models/anchor-master/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/Models/CLEAR-master/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/Models/DiCE/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/Models/PASTLE-main/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/Models/PermuteAttack-main/venv" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="C:\Users\Rhinestein\Documents\ISCTE\Código Tese\thesis_mcd\Models\DiCE\requirements.txt" />
+  </component>
+</module>
