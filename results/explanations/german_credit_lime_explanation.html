@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_divJUZWY5GICF6Y4UU"></div>
+        <div class="lime top_div" id="top_div8F3TIWDFLB0J1S6"></div>
         
         <script>
-        var top_div = d3.select('#top_divJUZWY5GICF6Y4UU').classed('lime top_div', true);
+        var top_div = d3.select('#top_div8F3TIWDFLB0J1S6').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["0", "1"], [0.815780520439148, 0.18421944975852966]);
+            var pp = new lime.PredictProba(pp_svg, ["0", "1"], [0.006900668144226074, 0.9930993318557739]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["0", "1"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["NumTrades90Ever2DerogPubRec", -0.07769402414316903], ["AverageMInFile", -0.0500164569157393], ["NumInqLast6Mexcl7days", 0.04680265950795694], ["MSinceMostRecentInqexcl7days", 0.0449698901466243], ["MSinceMostRecentTradeOpen", -0.03440234881913909], ["MSinceMostRecentDelq", -0.032222223717768915], ["NumBank2NatlTradesWHighUtilization", -0.030134205105478103], ["NumTradesOpeninLast12M", 0.01809537831617999], ["NumInqLast6M", -0.017545465389760442], ["RiskPerformance", -0.017328593373059545], ["NumRevolvingTradesWBalance", -0.017089249616057168], ["NetFractionRevolvingBurden", 0.012912340575965513], ["NumSatisfactoryTrades", 0.012874947018644087], ["ExternalRiskEstimate", 0.012090158555527652], ["PercentInstallTrades", -0.010381867521055252], ["NetFractionInstallBurden", 0.010145945877729696], ["NumTrades60Ever2DerogPubRec", 0.006705727329503506], ["PercentTradesNeverDelq", -0.006134355183942685], ["NumInstallTradesWBalance", 0.004091580548437896], ["MaxDelqEver", 0.003919311473065978], ["MSinceOldestTradeOpen", 0.0038482991060063538], ["NumTotalTrades", -0.0025125496887754718], ["MaxDelq2PublicRecLast12M", 0.001659280318447787]], 1, exp_div);
+                exp.show([["personal_status", -0.07565501347565794], ["foreign_worker", -0.027160633719653708], ["installment_rate", -0.02034821799949737], ["amount", 0.011838932658647093], ["debtors", -0.010149864518560703], ["status", 0.006107324279789621], ["duration", -0.005326660390148376], ["residence_since", -0.004347007318766277], ["cost_matrix_1", -0.0032678730199056515], ["job", 0.0025115215969844893], ["credits_bank", 0.0024652756617189325], ["purpose", -0.0023732956904961647], ["age", -0.0021607738724134153], ["risk", -0.0016315248822790568], ["telephone", 0.0015389345196146027], ["cost_matrix_3", -0.001259326283312855], ["history", 0.0011563254959671935], ["housing", 0.0011474044498403055], ["employment_since", -0.0011311558862338671], ["liable_to_maintenance", 0.0008409707404155856], ["property", 0.0006324569976309624], ["savings", -0.0003480253850362606], ["installment_plans", 0.00011329680594227333], ["cost_matrix_2", -1.5705697503600928e-05]], 1, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_tabular([["NumTrades90Ever2DerogPubRec", "100.00", -0.07769402414316903], ["AverageMInFile", "8.00", -0.0500164569157393], ["NumInqLast6Mexcl7days", "19.00", 0.04680265950795694], ["MSinceMostRecentInqexcl7days", "0.00", 0.0449698901466243], ["MSinceMostRecentTradeOpen", "110.00", -0.03440234881913909], ["MSinceMostRecentDelq", "7.00", -0.032222223717768915], ["NumBank2NatlTradesWHighUtilization", "60.00", -0.030134205105478103], ["NumTradesOpeninLast12M", "50.00", 0.01809537831617999], ["NumInqLast6M", "0.00", -0.017545465389760442], ["RiskPerformance", "87.00", -0.017328593373059545], ["NumRevolvingTradesWBalance", "1.00", -0.017089249616057168], ["NetFractionRevolvingBurden", "-8.00", 0.012912340575965513], ["NumSatisfactoryTrades", "0.00", 0.012874947018644087], ["ExternalRiskEstimate", "210.00", 0.012090158555527652], ["PercentInstallTrades", "18.00", -0.010381867521055252], ["NetFractionInstallBurden", "2.00", 0.010145945877729696], ["NumTrades60Ever2DerogPubRec", "0.00", 0.006705727329503506], ["PercentTradesNeverDelq", "-7.00", -0.006134355183942685], ["NumInstallTradesWBalance", "0.00", 0.004091580548437896], ["MaxDelqEver", "10.00", 0.003919311473065978], ["MSinceOldestTradeOpen", "19.00", 0.0038482991060063538], ["NumTotalTrades", "0.00", -0.0025125496887754718], ["MaxDelq2PublicRecLast12M", "8.00", 0.001659280318447787]], 1, raw_div);
+            exp.show_raw_tabular([["personal_status", "3.00", -0.07565501347565794], ["foreign_worker", "0.00", -0.027160633719653708], ["installment_rate", "1.00", -0.02034821799949737], ["amount", "2.00", 0.011838932658647093], ["debtors", "27.00", -0.010149864518560703], ["status", "2.00", 0.006107324279789621], ["duration", "12.00", -0.005326660390148376], ["residence_since", "3.00", -0.004347007318766277], ["cost_matrix_1", "0.00", -0.0032678730199056515], ["job", "0.00", 0.0025115215969844893], ["credits_bank", "1.00", 0.0024652756617189325], ["purpose", "20.00", -0.0023732956904961647], ["age", "1.00", -0.0021607738724134153], ["risk", "0.00", -0.0016315248822790568], ["telephone", "0.00", 0.0015389345196146027], ["cost_matrix_3", "1.00", -0.001259326283312855], ["history", "4.00", 0.0011563254959671935], ["housing", "1.00", 0.0011474044498403055], ["employment_since", "3.00", -0.0011311558862338671], ["liable_to_maintenance", "1.00", 0.0008409707404155856], ["property", "1.00", 0.0006324569976309624], ["savings", "2.00", -0.0003480253850362606], ["installment_plans", "1.00", 0.00011329680594227333], ["cost_matrix_2", "1.00", -1.5705697503600928e-05]], 1, raw_div);
         
         </script>
         </body></html>

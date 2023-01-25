@@ -1,0 +1,8 @@
+---Data info---
+                    Train
+Accuracy         0.817856
+ROC_AUC          0.816142
+F1_Score         0.830554
+Precision_Score  0.806695
+Recall_Score     0.855866
+---Data Description---

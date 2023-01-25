@@ -1,0 +1,8 @@
+---Data info---
+                     Test
+Accuracy         0.823500
+ROC_AUC          0.659593
+F1_Score         0.476002
+Precision_Score  0.664365
+Recall_Score     0.370856
+---Data Description---
