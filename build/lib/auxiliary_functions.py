@@ -39,7 +39,7 @@ def analysis(dataframe, filename = "analysis.txt", pred_col = None, pred_values 
         data_desc = dataframe.describe(include = 'all').to_string()
         print("Non-null values present in each column\n", data_info)
         print("Statistical information of each column\n", data_desc)
-        save_to_file("results/analysis/"+filename, data_info, data_desc, pred_col, pred_counts,
+        save_to_file(filename, data_info, data_desc, pred_col, pred_counts,
                      "---Data info---\n",
                      "\n---Data Description---\n",
                      "\n---Prediction column values---\n")
@@ -83,5 +83,5 @@ def model_evaluation(model, title, feature, target, filename):
     recall = recall_score(target, pred)
     scores[title] = [acc, roc_auc, f1, prec, recall]
     scores.index = ['Accuracy', 'ROC_AUC', 'F1_Score', 'Precision_Score','Recall_Score']
-    save_to_file("results/model_performance/"+filename, scores.to_string(), "")
+    save_to_file(filename, scores, "")
     return scores

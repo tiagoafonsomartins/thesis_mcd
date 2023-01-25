@@ -1,0 +1,159 @@
+auxiliary_functions.py
+default_credit.txt
+german_credit.txt
+german_credit_num.txt
+heloc.txt
+main.py
+setup.py
+shap_lime.py
+.idea/.gitignore
+.idea/misc.xml
+.idea/modules.xml
+.idea/thesis_mcd.iml
+.idea/vcs.xml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/libraries/CLEAR_version1.xml
+Artigo/.gitattributes
+Artigo/Ano_Livro_Tipo.csv
+Artigo/Ano_Livro_Tipo_principais.csv
+Artigo/Categorização de artigos.ipynb
+Artigo/Categorização dos domínios das revistas.ipynb
+Artigo/doc.csv
+Artigo/src.csv
+Artigo/subject area count.csv
+Artigo/subject area principais.csv
+Artigo/supergroup count - Cópia.csv
+Artigo/supergroup count.csv
+Artigo/supergroup principais.csv
+Artigo/year.csv
+Artigo/.ipynb_checkpoints/Categorização de artigos-checkpoint.ipynb
+Artigo/.ipynb_checkpoints/Categorização dos domínios das revistas-checkpoint.ipynb
+Artigo/fontes/Conferencias.csv
+Artigo/fontes/Conferencias_completo_sem_subject_area.csv
+Artigo/fontes/Revistas e jornais completo com subject areas.csv
+Artigo/fontes/Subject Areas.csv
+Artigo/fontes/Supergroup Subject Areas.csv
+Artigo/não usado/Keywords_final.csv
+Artigo/não usado/keywords.csv
+Datasets/default of credit card clients.csv
+Datasets/german.data
+Datasets/german.data-numeric
+Datasets/german.data-numeric.csv
+Datasets/german_data.csv
+Datasets/heloc_dataset_v1.csv
+Datasets/Source/default of credit card clients.xlsx
+Models/CLEAR-master/Breast cancer.csv
+Models/CLEAR-master/CLEAR-version1.zip
+Models/CLEAR-master/CLEAR.css
+Models/CLEAR-master/CLEAR.py
+Models/CLEAR-master/CLEAR_Adult.h5
+Models/CLEAR-master/CLEAR_perturbations.py
+Models/CLEAR-master/CLEAR_plot.png
+Models/CLEAR-master/CLEAR_prediction_report.html
+Models/CLEAR-master/CLEAR_regression.py
+Models/CLEAR-master/CLEAR_report.html
+Models/CLEAR-master/CLEAR_sample_model.h5
+Models/CLEAR-master/CLEAR_sample_models_datasets.py
+Models/CLEAR-master/CLEAR_sensitivity_files.py
+Models/CLEAR-master/CLEAR_settings.py
+Models/CLEAR-master/CLEARapp.js
+Models/CLEAR-master/Feature_plot.png
+Models/CLEAR-master/Input Parameters for CLEAR.pdf
+Models/CLEAR-master/LICENSE
+Models/CLEAR-master/README.md
+Models/CLEAR-master/X_test
+Models/CLEAR-master/X_test_sample
+Models/CLEAR-master/X_test_sample_Adult
+Models/CLEAR-master/X_train
+Models/CLEAR-master/X_train_Adult
+Models/CLEAR-master/adult.csv
+Models/CLEAR-master/clear.yml
+Models/CLEAR-master/default credit cards.csv
+Models/CLEAR-master/diabetes.csv
+Models/CLEAR-master/iris.csv
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/.gitignore
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/DataSet.py
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/README.md
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/main.py
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/models.py
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/split.py
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/utils.py
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/checkpoints/.gitignore
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/datasets/Kaggle_CCFD/.gitignore
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/pyod/OCAN.ipynb
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/pyod/auto_encoder.py
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/pyod/copod.py
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/pyod/ocnn.py
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/pyod/ocsvm.py
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/pyod/record.txt
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/pyod/so_gaal.py
+Models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/pyod/utils.py
+Models/PASTLE-main/.gitignore
+Models/PASTLE-main/LICENSE
+Models/PASTLE-main/README.md
+Models/PASTLE-main/run_pastle.py
+Models/PASTLE-main/.idea/.gitignore
+Models/PASTLE-main/data/wdbc.data
+Models/PASTLE-main/data/adult/adult.csv
+Models/PASTLE-main/data/adult/adult.names
+Models/PASTLE-main/data/banknote/data_banknote_authentication.csv
+Models/PASTLE-main/data/diabetes/diabetes.csv
+Models/PASTLE-main/data/digits/digits_test.csv
+Models/PASTLE-main/data/digits/digits_train.csv
+Models/PASTLE-main/data/magic/magic04.csv
+Models/PASTLE-main/data/magic/magic04.names
+Models/PASTLE-main/data/spambase/spambase.csv
+Models/PASTLE-main/data/spambase/spambase.names
+Models/PASTLE-main/data/titanic/titanic.csv
+Models/PASTLE-main/data/wholesale/Wholesale customers data.csv
+Models/PASTLE-main/src/data_handlers.py
+Models/PASTLE-main/src/explainers.py
+Models/PASTLE-main/src/explanations.py
+Models/PASTLE-main/src/pivots_generators.py
+Models/PermuteAttack-main/.gitignore
+Models/PermuteAttack-main/LICENSE
+Models/PermuteAttack-main/README.md
+Models/PermuteAttack-main/example-german-naive.ipynb
+Models/PermuteAttack-main/example-gibbss.ipynb
+Models/PermuteAttack-main/example.ipynb
+Models/PermuteAttack-main/requirements.txt
+Models/PermuteAttack-main/data/german_credit.csv
+Models/PermuteAttack-main/data/titanic.csv
+Models/PermuteAttack-main/src/__init__.py
+Models/PermuteAttack-main/src/ga_attack.py
+Models/PermuteAttack-main/src/ga_attack_gibss.py
+Models/PermuteAttack-main/src/utils.py
+Models/anchor-master/LICENSE
+Models/anchor-master/MANIFEST.in
+Models/anchor-master/README.md
+Models/anchor-master/setup.py
+Models/anchor-master/anchor/__init__.py
+Models/anchor-master/anchor/anchor_base.py
+Models/anchor-master/anchor/anchor_explanation.py
+Models/anchor-master/anchor/anchor_image.py
+Models/anchor-master/anchor/anchor_tabular.py
+Models/anchor-master/anchor/anchor_text.py
+Models/anchor-master/anchor/bundle.js
+Models/anchor-master/anchor/package.json
+Models/anchor-master/anchor/utils.py
+Models/anchor-master/anchor/webpack.config.js
+Models/anchor-master/anchor/css/style.less
+Models/anchor-master/anchor/js/anchor.js
+Models/anchor-master/anchor/js/anchor_examples.js
+Models/anchor-master/anchor/js/example_roll.js
+Models/anchor-master/anchor/js/explanation_frame.js
+Models/anchor-master/anchor/js/main.js
+Models/anchor-master/anchor/js/predict_proba_react.js
+Models/anchor-master/anchor/js/raw_tabular.js
+Models/anchor-master/anchor/js/raw_text.js
+Models/anchor-master/notebooks/Anchor for text.ipynb
+Models/anchor-master/notebooks/Anchor on tabular data.ipynb
+Models/anchor-master/notebooks/Image example with torchvision.ipynb
+Models/anchor-master/notebooks/Images_todo.ipynb
+Models/anchor-master/notebooks/nick.png
+__pycache__/auxiliary_functions.cpython-38.pyc
+thesis_mcd.egg-info/PKG-INFO
+thesis_mcd.egg-info/SOURCES.txt
+thesis_mcd.egg-info/dependency_links.txt
+thesis_mcd.egg-info/requires.txt
+thesis_mcd.egg-info/top_level.txt

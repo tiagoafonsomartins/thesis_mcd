@@ -7,7 +7,7 @@ import pandas as pd
 import auxiliary_functions as af
 import xgboost
 
-import shap_lime as sl
+import shap_lime
 
 # Defining categorical and numerical columns for Credit Card
 default_credit_cat_cols = ["X2", "X3", "X4"]
@@ -62,10 +62,10 @@ german_num_cols = ["duration",
 german_num_cols_num = [0, 2, 3, 5, 6, 8, 9, 11, 13, 14, 16, 18, 19, 20]
 
 # Reading "data.csv" file present in "data" sub-folder
-default_credit = pd.read_csv("datasets/default of credit card clients.csv", index_col ="ID", delimiter=';', header=0)
-german_credit = pd.read_csv("datasets/german_data.csv", delimiter=';', header=0)
-german_credit_num = pd.read_csv("datasets/german.data-numeric.csv", delimiter=';', header=0)
-heloc = pd.read_csv("datasets/heloc_dataset_v1.csv", delimiter=',', header=0)
+default_credit = pd.read_csv("Datasets/default of credit card clients.csv", index_col = "ID", delimiter=';', header=0)
+german_credit = pd.read_csv("Datasets/german_data.csv", delimiter=';', header=0)
+german_credit_num = pd.read_csv("Datasets/german.data-numeric.csv", delimiter=';', header=0)
+heloc = pd.read_csv("Datasets/heloc_dataset_v1.csv", delimiter=',', header=0)
 
 
 # Black-box model
@@ -80,12 +80,14 @@ xgb_final = xgboost.XGBClassifier(tree_method = 'hist',
 
 
 # Default Credit - Data preparation and split into train/test
-#x_train, x_test, y_train, y_test = af.data_prep(default_credit, "default_credit.txt", "Y", replacer = [0, 1])
-#xgb_final.fit(x_train, y_train)
-#af.model_evaluation(xgb_final, "Train", x_train, y_train, "xgboost_train.txt")
-#af.model_evaluation(xgb_final, "Test", x_test, y_test, "xgboost_test.txt")
-#
-#sl.lime_explainer(xgb_final, x_train, x_test, default_credit.columns, [0, 1], "default-credit")
+x_train, x_test, y_train, y_test = af.data_prep(default_credit, "default_credit.txt", "Y", replacer = [0, 1])
+xgb_final.fit(x_train, y_train)
+af.model_evaluation(xgb_final, "Train", x_train, y_train, "xgboost_train.txt")
+af.model_evaluation(xgb_final, "Test", x_test, y_test, "xgboost_test.txt")
+
+shap_lime.shap_explainer(xgb_final, np.concatenate((x_train, x_test)))
+
+shap_lime.lime_explainer(xgb_final, x_train, x_test, y_train, y_test)
 # German Credit - Data preparation and split into train/test
 #x_train, x_test, y_train, y_test = af.data_prep(german_credit, "german_credit.txt", "risk", replacer = [1, 2])
 # German Credit - Data preparation and split into train/test
@@ -94,9 +96,3 @@ x_train, x_test, y_train, y_test = af.data_prep(german_credit_num, "german_credi
 
 # HELOC - Data preparation and split into train/test
 x_train, x_test, y_train, y_test = af.data_prep(heloc, "heloc.txt", ["RiskPerformance"], ["Good", "Bad"], replacer = [0, 1])
-xgb_final.fit(x_train, y_train)
-af.model_evaluation(xgb_final, "Train", x_train, y_train, "xgboost_train.txt")
-af.model_evaluation(xgb_final, "Test", x_test, y_test, "xgboost_test.txt")
-
-#sl.shap_explainer(xgb_final, np.concatenate((x_train, x_test)))
-sl.lime_explainer(xgb_final, x_train, x_test, default_credit.columns, [0, 1], "heloc")
