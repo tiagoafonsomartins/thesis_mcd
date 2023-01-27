@@ -20,7 +20,7 @@ def init():
     categorical_features = ['marital_status', 'occupation', 'gender', 'workclass', 'education']
     category_prefix = ['mar', 'occ', 'gen', 'wor', 'edu']
     class_labels = {0: '<=$50K', 1: '> $50K'}
-    sample_model = 'Adult'  # This is used by Run_CLEAR_with_sample_model(). Options are
+    sample_model = 'Credit Card'  # This is used by Run_CLEAR_with_sample_model(). Options are
                                 # 'Credit Card','PIMA','Adult','BreastC','IRIS'
     max_predictors = 15 # maximum number of dependent variables in stepwise regression
     first_obs = 1  # first observation to analyse from test dataset
@@ -31,7 +31,7 @@ def init():
     #                          set to aic or adjR (adjusted R-squared)
     logistic_regularise = False  # it is recommended to keep this as False unless there are problems with perfect separation
     regression_sample_size = 200  # minimum number of observations in local regression. Default 200
-    CLEAR_path = '/models/CLEAR-master'  # e.g. 'D:/CLEAR/'
+    CLEAR_path = "C:/Users/Rhinestein/Documents/ISCTE/Código Tese/thesis_mcd/models/CLEAR-master"  # e.g. 'D:/CLEAR/'
     neighbourhood_algorithm = 'Balanced'  # 'Balanced' 'Unbalanced' Default should be Balanced .
     apply_counterfactual_weights = True
     counterfactual_weight = 9  # default to 9

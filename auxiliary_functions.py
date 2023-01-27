@@ -2,6 +2,7 @@ import io
 
 import numpy as np
 import pandas as pd
+import sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
 
@@ -67,7 +68,7 @@ def analysis(dataframe, filename="analysis.txt", pred_col=None, pred_values=[1, 
 # pred_col -    target variable
 # val_replacer_origin - target values' transformation from categorical to numerical
 # replacer -    new value for target value
-def data_prep(dataframe, filename, pred_col, val_replacer_origin=None, replacer=None):
+def data_prep_sep_target(dataframe, filename, pred_col, val_replacer_origin=None, replacer=None):
     features = dataframe.drop(columns=pred_col)
     if val_replacer_origin is not None and replacer is not None:
         target = dataframe[pred_col].replace(to_replace=val_replacer_origin, value=replacer)
@@ -86,6 +87,16 @@ def data_prep(dataframe, filename, pred_col, val_replacer_origin=None, replacer=
     return x_train, x_test, y_train, y_test
 
 
+# Alternative method to return only test and train data without separating the target feature
+def data_prep(dataframe):
+
+    train, test = train_test_split(dataframe, test_size=0.2, random_state=0)
+    train = np.array(train)
+    test = np.array(test)
+
+    return train, test
+
+
 def model_evaluation(model, title, feature, target, filename):
     scores = pd.DataFrame()
     pred = model.predict(feature)
@@ -98,3 +109,15 @@ def model_evaluation(model, title, feature, target, filename):
     scores.index = ['Accuracy', 'ROC_AUC', 'F1_Score', 'Precision_Score', 'Recall_Score']
     save_to_file("results/model_performance/" + filename, scores.to_string(), "")
     return scores
+
+
+def cat_names(data, categorical_features):
+    categorical_names = {}
+    for feature in categorical_features:
+        le = sklearn.preprocessing.LabelEncoder()
+        le.fit(data[:, feature])
+        data[:, feature] = le.transform(data[:, feature])
+        categorical_names[feature] = le.classes_
+
+    return categorical_names
+
