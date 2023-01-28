@@ -199,15 +199,15 @@ def load_csv_dataset(data, target_idx, delimiter=',',
     if not categorical_features, consider everything < 20 as categorical"""
     if feature_transformations is None:
         feature_transformations = {}
-    try:
-        data = np.genfromtxt(data, delimiter=delimiter, dtype='|S128')
-    except:
-        import pandas
-        data = pandas.read_csv(data,
-                               header=None,
-                               delimiter=delimiter,
-                               na_filter=True,
-                               dtype=str).fillna(fill_na).values
+    #try:
+    #    data = np.genfromtxt(data, delimiter=delimiter, dtype='|S128')
+    #except:
+    #    import pandas
+    #    data = pandas.read_csv(data,
+    #                           header=None,
+    #                           delimiter=delimiter,
+    #                           na_filter=True,
+    #                           dtype=str).fillna(fill_na).values
     if target_idx < 0:
         target_idx = data.shape[1] + target_idx
     ret = Bunch({})
@@ -218,11 +218,14 @@ def load_csv_dataset(data, target_idx, delimiter=',',
         feature_names = copy.deepcopy(feature_names)
     if skip_first:
         data = data[1:]
+    else:
+        data.columns = data.iloc[0]
+        data = data[1:]
     if filter_fn is not None:
         data = filter_fn(data)
     for feature, fun in feature_transformations.items():
         data[:, feature] = fun(data[:, feature])
-    labels = data[:, target_idx]
+    labels = data[target_idx]
     le = sklearn.preprocessing.LabelEncoder()
     le.fit(labels)
     ret.labels = le.transform(labels)
@@ -230,7 +233,7 @@ def load_csv_dataset(data, target_idx, delimiter=',',
     ret.class_names = list(le.classes_)
     ret.class_target = feature_names[target_idx]
     if features_to_use is not None:
-        data = data[:, features_to_use]
+        data = data[features_to_use]
         feature_names = ([x for i, x in enumerate(feature_names)
                           if i in features_to_use])
         if categorical_features is not None:
@@ -246,13 +249,13 @@ def load_csv_dataset(data, target_idx, delimiter=',',
     if categorical_features is None:
         categorical_features = []
         for f in range(data.shape[1]):
-            if len(np.unique(data[:, f])) < 20:
+            if len(np.unique(data[f])) < 20:
                 categorical_features.append(f)
     categorical_names = {}
     for feature in categorical_features:
         le = sklearn.preprocessing.LabelEncoder()
-        le.fit(data[:, feature])
-        data[:, feature] = le.transform(data[:, feature])
+        le.fit(data[feature])
+        data[feature] = le.transform(data[feature])
         categorical_names[feature] = le.classes_
     data = data.astype(float)
     ordinal_features = []
@@ -287,7 +290,7 @@ def load_csv_dataset(data, target_idx, delimiter=',',
                                                   test_size=.2,
                                                   random_state=1)
     train_idx, test_idx = [x for x in splits.split(data)][0]
-    ret.train = data[train_idx]
+    ret.train = data.iloc[train_idx]
     ret.labels_train = ret.labels[train_idx]
     cv_splits = sklearn.model_selection.ShuffleSplit(n_splits=1,
                                                      test_size=.5,
@@ -296,9 +299,9 @@ def load_csv_dataset(data, target_idx, delimiter=',',
     cv_idx = test_idx[cv_idx]
     test_idx = test_idx[ntest_idx]
 
-    ret.validation = data[cv_idx]
+    ret.validation = data.iloc[cv_idx]
     ret.labels_validation = ret.labels[cv_idx]
-    ret.test = data[test_idx]
+    ret.test = data.iloc[test_idx]
     ret.labels_test = ret.labels[test_idx]
     ret.test_idx = test_idx
     ret.validation_idx = cv_idx

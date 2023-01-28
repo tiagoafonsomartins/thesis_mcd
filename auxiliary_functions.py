@@ -113,11 +113,19 @@ def model_evaluation(model, title, feature, target, filename):
 
 def cat_names(data, categorical_features):
     categorical_names = {}
+    data.columns = data.columns.str.strip()
+
     for feature in categorical_features:
         le = sklearn.preprocessing.LabelEncoder()
-        le.fit(data[:, feature])
-        data[:, feature] = le.transform(data[:, feature])
+        le.fit(data[feature])
+        data[feature] = le.transform(data[feature])
         categorical_names[feature] = le.classes_
+        #print("feature ", feature)
+        #print("le ", le.fit(data.loc[:, feature]))
+        #le.fit(data.loc[:, feature])
+        #data.loc[:, feature] = le.transform(data.loc[:, feature])
+        #categorical_names[feature] = le.classes_
 
+    print(categorical_names)
     return categorical_names
 
