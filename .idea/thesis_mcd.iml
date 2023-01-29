@@ -5,11 +5,11 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/models/DiCE/venv" />
-      <excludeFolder url="file://$MODULE_DIR$/models/CLEAR-master/venv" />
-      <excludeFolder url="file://$MODULE_DIR$/models/anchor-master/venv" />
-      <excludeFolder url="file://$MODULE_DIR$/models/Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main/venv" />
-      <excludeFolder url="file://$MODULE_DIR$/models/PASTLE-main/venv" />
-      <excludeFolder url="file://$MODULE_DIR$/models/PermuteAttack-main/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/models/PASTLE/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/models/Locally_Interpretable_Anomaly/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/models/CLEAR/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/models/anchor/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/models/PermuteAttack/venv" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

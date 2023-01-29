@@ -75,7 +75,7 @@ sl.lime_explainer(xgb_final, x_train, x_test, default_credit.columns, [0, 1], "d
 random_forest_classifier.fit(x_train, y_train)
 anchors.anchor_explainer(random_forest_classifier, default_credit_anchors, 23, default_credit_with_target, default_credit_index, default_credit_cat_cols_num)
 
-permute_attack.permuteattack_explainer(random_forest_classifier, x_train, y_test)
+permute_attack.permuteattack_explainer(random_forest_classifier, default_credit_no_target, x_train, x_test)
 
 # German Credit - Data preparation and split into train/test
 # x_train, x_test, y_train, y_test = af.data_prep(german_credit, "german_credit.txt", "risk", replacer = [1, 2])

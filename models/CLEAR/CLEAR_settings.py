@@ -31,7 +31,7 @@ def init():
     #                          set to aic or adjR (adjusted R-squared)
     logistic_regularise = False  # it is recommended to keep this as False unless there are problems with perfect separation
     regression_sample_size = 200  # minimum number of observations in local regression. Default 200
-    CLEAR_path = "C:/Users/Rhinestein/Documents/ISCTE/Código Tese/thesis_mcd/models/CLEAR-master"  # e.g. 'D:/CLEAR/'
+    CLEAR_path = "/models/CLEAR"  # e.g. 'D:/CLEAR/'
     neighbourhood_algorithm = 'Balanced'  # 'Balanced' 'Unbalanced' Default should be Balanced .
     apply_counterfactual_weights = True
     counterfactual_weight = 9  # default to 9
