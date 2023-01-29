@@ -1,14 +1,14 @@
 import importlib
 import numpy as np
 import sys
-sys.path.append("C:/Users/Rhinestein/Documents/ISCTE/Código Tese/thesis_mcd\models/anchor-master")
+sys.path.append("C:/Users/Rhinestein/Documents/ISCTE/Código Tese/thesis_mcd/models/anchor-master")
 anchor = importlib.import_module("models.anchor-master.anchor")
 import anchor.utils
 import anchor.anchor_tabular
 from anchor.utils import map_array_values
 
 
-def anchor_explanation(model, dataset, class_name, feature_names, features_to_use, categorical_features):#, , categorical_names, idx=0):#train, test, train_label, test_label, class_name, feature_names, categorical_names, idx=0):
+def anchor_explainer(model, dataset, class_name, feature_names, features_to_use, categorical_features):#, , categorical_names, idx=0):#train, test, train_label, test_label, class_name, feature_names, categorical_names, idx=0):
 
     dataset_anchors = anchor.utils.load_csv_dataset(dataset, features_to_use=features_to_use, feature_names=feature_names, categorical_features=categorical_features,target_idx=class_name, skip_first=True)
 

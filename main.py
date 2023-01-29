@@ -3,6 +3,8 @@ import sklearn
 
 import auxiliary_functions as af
 import xgboost
+
+import permute_attack
 import shap_lime as sl
 import importlib
 import anchors
@@ -71,9 +73,9 @@ sl.lime_explainer(xgb_final, x_train, x_test, default_credit.columns, [0, 1], "d
 #default_credit_anchors = anchor.utils.load_csv_dataset(default_credit)
 
 random_forest_classifier.fit(x_train, y_train)
-anchors.anchor_explanation(random_forest_classifier, default_credit_anchors, 23, default_credit_with_target, default_credit_index, default_credit_cat_cols_num) #x_train, x_test, y_train, y_test, "Y",
-                           #default_credit.columns,
-                           #af.cat_names(default_credit, default_credit_cat_cols))#default_credit_cat_cols_num))
+anchors.anchor_explainer(random_forest_classifier, default_credit_anchors, 23, default_credit_with_target, default_credit_index, default_credit_cat_cols_num)
+
+permute_attack.permuteattack_explainer(random_forest_classifier, x_train, y_test)
 
 # German Credit - Data preparation and split into train/test
 # x_train, x_test, y_train, y_test = af.data_prep(german_credit, "german_credit.txt", "risk", replacer = [1, 2])
