@@ -8,6 +8,7 @@ import permute_attack
 import shap_lime as sl
 import importlib
 import anchors
+import pdp_ice
 #anchor = importlib.import_module("models.anchor-master.anchor")
 #print(anchor)
 #import anchor.utils
@@ -31,6 +32,7 @@ default_credit_num_cols_no_target = default_credit_num_cols.remove("Y")
 default_credit_cat_cols_num = [2, 3, 4]
 default_credit_num_cols_num = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
 default_credit_index = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22, 23]
+
 default_credit_no_target = ["X1","X2","X3","X4","X5","X6", "X7", "X8", "X9", "X10", "X11", "X12", "X13", "X14", "X15", "X16", "X17","X18", "X19", "X20", "X21", "X22", "X23"]
 default_credit_with_target = ["X1","X2","X3","X4","X5","X6", "X7", "X8", "X9", "X10", "X11", "X12", "X13", "X14", "X15", "X16", "X17","X18", "X19", "X20", "X21", "X22", "X23", "Y"]
 
@@ -44,7 +46,7 @@ german_num_cols_num = [1, 4, 7, 10, 12, 15, 17]
 german_num_cols = ["duration","amount","installment_rate","residence_since","age","credits_bank","liable_to_maintenance"]
 
 
-# Reading "data.csv" file present in "data" sub-folder
+# Reading the 3 datasets
 default_credit = pd.read_csv("datasets/default of credit card clients.csv", delimiter=';', header=0)
 default_credit_anchors = pd.read_csv("datasets/default of credit card clients.csv", index_col=None, delimiter=';', header=None)
 german_credit = pd.read_csv("datasets/german_data.csv", delimiter=';', header=0)
@@ -68,14 +70,18 @@ xgb_final.fit(x_train, y_train)
 af.model_evaluation(xgb_final, "Train", x_train, y_train, "default_credit_xgboost_train.txt")
 af.model_evaluation(xgb_final, "Test", x_test, y_test, "default_credit_xgboost_test.txt")
 
+sl.shap_explainer(xgb_final, x_train, "default_credit")
 sl.lime_explainer(xgb_final, x_train, x_test, default_credit.columns, [0, 1], "default_credit")
 #train, test = af.data_prep(default_credit)
 #default_credit_anchors = anchor.utils.load_csv_dataset(default_credit)
 
 random_forest_classifier.fit(x_train, y_train)
-anchors.anchor_explainer(random_forest_classifier, default_credit_anchors, 23, default_credit_with_target, default_credit_index, default_credit_cat_cols_num)
+anchors.anchor_explainer(random_forest_classifier, default_credit_anchors.values, 23, default_credit_with_target, default_credit_index, default_credit_cat_cols_num, "default_credit")
 
-permute_attack.permuteattack_explainer(random_forest_classifier, default_credit_no_target, x_train, x_test)
+permute_attack.permuteattack_explainer(random_forest_classifier, default_credit_no_target, x_train, x_test, "default_credit")
+#for x in range(len(default_credit_no_target)):
+#    pdp = pdp_ice.pdp_explainer(random_forest_classifier, x_train, [x], default_credit_no_target, "default_credit")
+pdp = pdp_ice.pdp_explainer(random_forest_classifier, x_train, [9], default_credit_no_target, "default_credit")
 
 # German Credit - Data preparation and split into train/test
 # x_train, x_test, y_train, y_test = af.data_prep(german_credit, "german_credit.txt", "risk", replacer = [1, 2])

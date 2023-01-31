@@ -29,9 +29,23 @@ def save_to_file(filename, data_info, data_desc="", pred_col=None, pred_counts=N
             file.write(desc3)
             file.write(str(pred_counts))
 
+def save_to_file_2(filename, data_info, data_desc="", pred_col=None, pred_counts=None,
+                 desc1="---Data info---\n",
+                 desc2="\n---Data Description---\n",
+                 desc3="\n---Prediction column values---\n"):
+    with open(filename, 'w') as file:
+        for x in data_info:
+            file.write(str(x))
+
+        #file.write(data_info)
+        #file.write(desc2)
+        #file.write(data_desc)
+        if pred_col is not None:
+            file.write(desc3)
+            file.write(str(pred_counts))
 
 # Statistical analysis of obtained datasets
-# dataframe -    DataFrame to be used for the analysis
+# dataframe -    Pandas DataFrame to be used for the analysis
 # filename -     Name of output file. Should be similar to dataset used to avoid confusion
 # pred_col -     Column used for predictions
 # pred_values -  List of all possible values for the prediction
@@ -64,10 +78,10 @@ def analysis(dataframe, filename="analysis.txt", pred_col=None, pred_values=[1, 
 
 # Prepare the data for prediction and explanation. It is suggested to use the last two parameters in order
 # to avoid problems with predictive models that only take numerical features
-# dataframe -   dataframe to divide
-# pred_col -    target variable
-# val_replacer_origin - target values' transformation from categorical to numerical
-# replacer -    new value for target value
+# dataframe -   Pandas DataFrame to divide
+# pred_col -    str with target variable
+# val_replacer_origin - array with target values' transformation from categorical to numerical
+# replacer -    array with new value for target value
 def data_prep_sep_target(dataframe, filename, pred_col, val_replacer_origin=None, replacer=None):
     features = dataframe.drop(columns=pred_col)
     if val_replacer_origin is not None and replacer is not None:
@@ -97,6 +111,12 @@ def data_prep(dataframe):
     return train, test
 
 
+# Evaluate model performance
+# model -
+# title -
+# feature -
+# target -
+# filename - str containing name of saved file
 def model_evaluation(model, title, feature, target, filename):
     scores = pd.DataFrame()
     pred = model.predict(feature)

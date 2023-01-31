@@ -35,8 +35,8 @@ def load_dataset(dataset_name, balance=False, discretize=True, dataset_folder='.
         categorical_features = [1, 3, 5, 6, 7, 8, 9, 10, 11, 13]
         education_map = {
             '10th': 'Dropout', '11th': 'Dropout', '12th': 'Dropout', '1st-4th':
-            'Dropout', '5th-6th': 'Dropout', '7th-8th': 'Dropout', '9th':
-            'Dropout', 'Preschool': 'Dropout', 'HS-grad': 'High School grad',
+                'Dropout', '5th-6th': 'Dropout', '7th-8th': 'Dropout', '9th':
+                'Dropout', 'Preschool': 'Dropout', 'HS-grad': 'High School grad',
             'Some-college': 'High School grad', 'Masters': 'Masters',
             'Prof-school': 'Prof-School', 'Assoc-acdm': 'Associates',
             'Assoc-voc': 'Associates',
@@ -45,37 +45,37 @@ def load_dataset(dataset_name, balance=False, discretize=True, dataset_folder='.
             "Adm-clerical": "Admin", "Armed-Forces": "Military",
             "Craft-repair": "Blue-Collar", "Exec-managerial": "White-Collar",
             "Farming-fishing": "Blue-Collar", "Handlers-cleaners":
-            "Blue-Collar", "Machine-op-inspct": "Blue-Collar", "Other-service":
-            "Service", "Priv-house-serv": "Service", "Prof-specialty":
-            "Professional", "Protective-serv": "Other", "Sales":
-            "Sales", "Tech-support": "Other", "Transport-moving":
-            "Blue-Collar",
+                "Blue-Collar", "Machine-op-inspct": "Blue-Collar", "Other-service":
+                "Service", "Priv-house-serv": "Service", "Prof-specialty":
+                "Professional", "Protective-serv": "Other", "Sales":
+                "Sales", "Tech-support": "Other", "Transport-moving":
+                "Blue-Collar",
         }
         country_map = {
             'Cambodia': 'SE-Asia', 'Canada': 'British-Commonwealth', 'China':
-            'China', 'Columbia': 'South-America', 'Cuba': 'Other',
+                'China', 'Columbia': 'South-America', 'Cuba': 'Other',
             'Dominican-Republic': 'Latin-America', 'Ecuador': 'South-America',
             'El-Salvador': 'South-America', 'England': 'British-Commonwealth',
             'France': 'Euro_1', 'Germany': 'Euro_1', 'Greece': 'Euro_2',
             'Guatemala': 'Latin-America', 'Haiti': 'Latin-America',
             'Holand-Netherlands': 'Euro_1', 'Honduras': 'Latin-America',
             'Hong': 'China', 'Hungary': 'Euro_2', 'India':
-            'British-Commonwealth', 'Iran': 'Other', 'Ireland':
-            'British-Commonwealth', 'Italy': 'Euro_1', 'Jamaica':
-            'Latin-America', 'Japan': 'Other', 'Laos': 'SE-Asia', 'Mexico':
-            'Latin-America', 'Nicaragua': 'Latin-America',
+                'British-Commonwealth', 'Iran': 'Other', 'Ireland':
+                'British-Commonwealth', 'Italy': 'Euro_1', 'Jamaica':
+                'Latin-America', 'Japan': 'Other', 'Laos': 'SE-Asia', 'Mexico':
+                'Latin-America', 'Nicaragua': 'Latin-America',
             'Outlying-US(Guam-USVI-etc)': 'Latin-America', 'Peru':
-            'South-America', 'Philippines': 'SE-Asia', 'Poland': 'Euro_2',
+                'South-America', 'Philippines': 'SE-Asia', 'Poland': 'Euro_2',
             'Portugal': 'Euro_2', 'Puerto-Rico': 'Latin-America', 'Scotland':
-            'British-Commonwealth', 'South': 'Euro_2', 'Taiwan': 'China',
+                'British-Commonwealth', 'South': 'Euro_2', 'Taiwan': 'China',
             'Thailand': 'SE-Asia', 'Trinadad&Tobago': 'Latin-America',
             'United-States': 'United-States', 'Vietnam': 'SE-Asia'
         }
         married_map = {
             'Never-married': 'Never-Married', 'Married-AF-spouse': 'Married',
             'Married-civ-spouse': 'Married', 'Married-spouse-absent':
-            'Separated', 'Separated': 'Separated', 'Divorced':
-            'Separated', 'Widowed': 'Widowed'
+                'Separated', 'Separated': 'Separated', 'Divorced':
+                'Separated', 'Widowed': 'Widowed'
         }
         label_map = {'<=50K': 'Less than $50,000', '>50K': 'More than $50,000'}
 
@@ -116,10 +116,10 @@ def load_dataset(dataset_name, balance=False, discretize=True, dataset_folder='.
     elif dataset_name == 'default':
         categorical_features = [2, 3, 4, 6, 7, 8, 9, 10, 11]
         dataset = load_csv_dataset(
-                os.path.join(dataset_folder, 'default/default.csv'), -1, ',',
-                features_to_use=range(1, 24),
-                categorical_features=categorical_features, discretize=discretize,
-                balance=balance)
+            os.path.join(dataset_folder, 'default/default.csv'), -1, ',',
+            features_to_use=range(1, 24),
+            categorical_features=categorical_features, discretize=discretize,
+            balance=balance)
     elif dataset_name == 'recidivism':
         features_to_use = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,12, 13, 14]
         feature_names = ['Race', 'Alcohol', 'Junky', 'Supervised Release',
@@ -163,8 +163,8 @@ def load_dataset(dataset_name, balance=False, discretize=True, dataset_folder='.
     elif dataset_name == 'lending':
         def filter_fn(data):
             to_remove = ['Does not meet the credit policy. Status:Charged Off',
-               'Does not meet the credit policy. Status:Fully Paid',
-               'In Grace Period', '-999', 'Current']
+                         'Does not meet the credit policy. Status:Fully Paid',
+                         'In Grace Period', '-999', 'Current']
             for x in to_remove:
                 data = data[data[:, 16] != x]
             return data
@@ -218,14 +218,11 @@ def load_csv_dataset(data, target_idx, delimiter=',',
         feature_names = copy.deepcopy(feature_names)
     if skip_first:
         data = data[1:]
-    else:
-        data.columns = data.iloc[0]
-        data = data[1:]
     if filter_fn is not None:
         data = filter_fn(data)
     for feature, fun in feature_transformations.items():
         data[:, feature] = fun(data[:, feature])
-    labels = data[target_idx]
+    labels = data[:, target_idx]
     le = sklearn.preprocessing.LabelEncoder()
     le.fit(labels)
     ret.labels = le.transform(labels)
@@ -233,7 +230,7 @@ def load_csv_dataset(data, target_idx, delimiter=',',
     ret.class_names = list(le.classes_)
     ret.class_target = feature_names[target_idx]
     if features_to_use is not None:
-        data = data[features_to_use]
+        data = data[:, features_to_use]
         feature_names = ([x for i, x in enumerate(feature_names)
                           if i in features_to_use])
         if categorical_features is not None:
@@ -249,13 +246,13 @@ def load_csv_dataset(data, target_idx, delimiter=',',
     if categorical_features is None:
         categorical_features = []
         for f in range(data.shape[1]):
-            if len(np.unique(data[f])) < 20:
+            if len(np.unique(data[:, f])) < 20:
                 categorical_features.append(f)
     categorical_names = {}
     for feature in categorical_features:
         le = sklearn.preprocessing.LabelEncoder()
-        le.fit(data[feature])
-        data[feature] = le.transform(data[feature])
+        le.fit(data[:, feature])
+        data[:, feature] = le.transform(data[:, feature])
         categorical_names[feature] = le.classes_
     data = data.astype(float)
     ordinal_features = []
@@ -290,7 +287,7 @@ def load_csv_dataset(data, target_idx, delimiter=',',
                                                   test_size=.2,
                                                   random_state=1)
     train_idx, test_idx = [x for x in splits.split(data)][0]
-    ret.train = data.iloc[train_idx]
+    ret.train = data[train_idx]
     ret.labels_train = ret.labels[train_idx]
     cv_splits = sklearn.model_selection.ShuffleSplit(n_splits=1,
                                                      test_size=.5,
@@ -299,9 +296,9 @@ def load_csv_dataset(data, target_idx, delimiter=',',
     cv_idx = test_idx[cv_idx]
     test_idx = test_idx[ntest_idx]
 
-    ret.validation = data.iloc[cv_idx]
+    ret.validation = data[cv_idx]
     ret.labels_validation = ret.labels[cv_idx]
-    ret.test = data.iloc[test_idx]
+    ret.test = data[test_idx]
     ret.labels_test = ret.labels[test_idx]
     ret.test_idx = test_idx
     ret.validation_idx = cv_idx
