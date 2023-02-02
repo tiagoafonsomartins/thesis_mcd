@@ -1,6 +1,0 @@
-*.csv
-/checkpoints/*.pth
-/__pycache__
-/fig
-/pyod/__pycache__
-/experiment/__pycache__

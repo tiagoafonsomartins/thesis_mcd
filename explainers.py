@@ -1,0 +1,123 @@
+import lime
+import matplotlib as plt
+import numpy as np
+import pandas as pd
+import shap
+import matplotlib as plt
+from sklearn.inspection import partial_dependence, PartialDependenceDisplay#, plot_partial_dependence
+#from sklearn.inspection.partial_dependence import plot_partial_dependence
+import auxiliary_functions as af
+from models.PermuteAttack.src import ga_attack as permute
+from models.anchor.anchor import utils as anchor_utils, anchor_tabular as anchor_tabular
+
+# PermuteAttack initializer
+# model - sklearn predictive model, tested after the operation fit() is made
+# feature_names - array of strings, indicating the name of the columns of the dataset
+# x_train/x_test - train/test dataset as numpy array
+# idx - integer referring to the preferred instance for generation of explanation
+def anchor_explainer(model, dataset, class_name, feature_names, features_to_use, categorical_features, dataset_name):
+
+    dataset_anchors = anchor_utils.load_csv_dataset(dataset, features_to_use=features_to_use, feature_names=feature_names, categorical_features=categorical_features,target_idx=class_name, skip_first=True)
+
+
+    explainer = anchor_tabular.AnchorTabularExplainer(
+        dataset_anchors.class_names,
+        dataset_anchors.feature_names,
+        dataset_anchors.train,
+        dataset_anchors.categorical_names)
+    idx = 0
+    np.random.seed(1)
+    exp = explainer.explain_instance(np.array(dataset_anchors.test)[idx,:], model.predict, threshold=0.95)
+    fit_anchor = np.where(np.all(np.array(dataset_anchors.test)[:, exp.features()] == np.array(dataset_anchors.test)[idx][exp.features()], axis=1))[0]
+    fit_partial = np.where(np.all(np.array(dataset_anchors.test)[:, exp.features(1)] == np.array(dataset_anchors.test)[idx][exp.features(1)], axis=1))[0]
+    anchors_data = []
+
+
+    anchor_tmp ='Anchor: %s' % (' AND '.join(exp.names()))
+    anchors_data.append(anchor_tmp + "\n")
+
+    anchor_tmp ='Precision: %.2f' % exp.precision()
+    anchors_data.append(anchor_tmp + "\n")
+
+    anchor_tmp ='Coverage: %.2f' % exp.coverage()
+    anchors_data.append(anchor_tmp + "\n")
+
+    # Get test examples where the anchors pplies
+    anchor_tmp = 'Anchor test precision: %.2f' % (np.mean(model.predict(np.array(dataset_anchors.test)[fit_anchor]) == model.predict(np.array(dataset_anchors.test)[idx].reshape(1, -1))))
+    anchors_data.append(anchor_tmp + "\n")
+    anchor_tmp = 'Anchor test coverage: %.2f' % (fit_anchor.shape[0] / float(np.array(dataset_anchors.test).shape[0]))
+    anchors_data.append(anchor_tmp + "\n")
+    anchor_tmp = 'Partial anchor: %s' % (' AND '.join(exp.names(1)))
+    anchors_data.append(anchor_tmp + "\n")
+    anchor_tmp = 'Partial precision: %.2f' % exp.precision(1)
+    anchors_data.append(anchor_tmp + "\n")
+    anchor_tmp = 'Partial coverage: %.2f' % exp.coverage(1)
+    anchors_data.append(anchor_tmp + "\n")
+    anchor_tmp = 'Partial anchor test precision: %.2f' % (np.mean(model.predict(np.array(dataset_anchors.test)[fit_partial]) == model.predict(np.array(dataset_anchors.test)[idx].reshape(1, -1))))
+    anchors_data.append(anchor_tmp + "\n")
+    anchor_tmp = 'Partial anchor test coverage: %.2f' % (fit_partial.shape[0] / float(np.array(dataset_anchors.test).shape[0]))
+    af.save_to_file_2("results/explanations/"+dataset_name+"/anchors.txt", anchors_data)
+
+
+def pdp_explainer(model, x_axis, features, feature_names, dataset_name):
+    print("features \n", features, "\n", "feat names \n", feature_names, "\n")
+    pdp_results = partial_dependence(model, x_axis, features)
+    pdp = PartialDependenceDisplay.from_estimator(model, x_axis, features=features, feature_names=feature_names)
+    #plot_partial_dependence(model, x_axis, features=features, feature_names=feature_names)
+
+    deciles = {0: np.linspace(0, 1, num=5)}
+    #pdp = PartialDependenceDisplay([pdp_results], target_idx=0, features=features, feature_names=feature_names, deciles=deciles)
+    plt.pyplot.savefig("results/explanations/"+dataset_name+"/"+str(features[0])+"_pdp_explanation.png")
+    #plt.pyplot.show()
+
+
+# PermuteAttack initializer
+# model - sklearn predictive model, tested after the operation fit() is made
+# feature_names - array of strings, indicating the name of the columns of the dataset
+# x_train/x_test - train/test dataset as numpy array
+# idx - integer referring to the preferred instance for generation of explanation
+def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name, idx=0):
+    permute_attack = permute.GAdvExample(feature_names=list(feature_names),
+                             sol_per_pop=30, num_parents_mating=10, cat_vars_ohe=None,
+                             num_generations=100, n_runs=10, black_list=[],
+                             verbose=False, beta=.95)
+
+    x_all, x_changes, x_sucess = permute_attack.attack(model, x=x_test[idx, :], x_train=x_train)
+    print("X_ALL \n", x_all, "\n", "X_CHANGES", "\n", x_changes, "\n", "X_SUCCESS", "\n", x_sucess)
+    af.save_to_file_2("results/explanations/" + dataset_name + "/all_permuteattack_explanation.txt", pd.DataFrame(x_all).values)
+    af.save_to_file_2("results/explanations/" + dataset_name + "/changes_permuteattack_explanation.txt", pd.DataFrame(x_changes).values)
+    af.save_to_file_2("results/explanations/" + dataset_name + "/success_permuteattack_explanation.txt", pd.DataFrame(x_sucess).values)
+
+
+'''
+ Main method for SHAP/LIME explanations which aims to englobe the initialization of such methods, un-cluttering main.py
+ model - sklearn predictive model, after .fit() method is applied to train data
+ x_train/x_test - train/test data as numpy arrays
+ cols - 
+ target_values
+ dataset_name - string representing the name of the dataset when saving the results
+ '''
+# LIME explanation framework, takes four parameters as np.array and the black-box model
+def lime_explainer(model, x_train, x_test, feature_labels, target_label, dataset_name, ID=None):
+    # if isinstance(x_train, np.float64)
+    explainer = lime.lime_tabular.LimeTabularExplainer(x_train, feature_names=feature_labels, class_names=target_label,
+                                                       discretize_continuous=False)
+    if ID is None:
+        np.random.randint(0, x_test.shape[0])
+
+    exp = explainer.explain_instance(x_test[3], model.predict_proba, num_features=len(feature_labels))
+    # exp.show_in_notebook(show_table=True, show_all=False)
+    exp.save_to_file("results/explanations/" + dataset_name + "/lime_explanation.html")
+
+# SHAP explanation framework, takes four parameters as np.array and the black-box model
+def shap_explainer(model, x, feature_names, dataset_name ):
+    shap.initjs()
+    explainer = shap.TreeExplainer(model)
+    shap_values = explainer.shap_values(x)
+    shap_interactions = explainer.shap_interaction_values(x)
+
+    shap.force_plot(explainer.expected_value, shap_values[0, :], x[0, :])
+    fig = shap.summary_plot(shap_values, x, feature_names=feature_names, plot_type="bar", show=False)
+    plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_explanation.png")
+    fig = shap.summary_plot(shap_interactions, x,  feature_names=feature_names, show=False)
+    plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_explanation_2.png")

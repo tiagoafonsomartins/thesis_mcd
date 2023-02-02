@@ -36,6 +36,7 @@ def save_to_file_2(filename, data_info, data_desc="", pred_col=None, pred_counts
     with open(filename, 'w') as file:
         for x in data_info:
             file.write(str(x))
+            #file.write("\n")
 
         #file.write(data_info)
         #file.write(desc2)

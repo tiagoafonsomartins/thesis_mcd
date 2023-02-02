@@ -1,1 +1,9 @@
-X7 <= 0.00X8 <= 0.00
+Anchor: Past, monthly payment (-5) <= 0.00 AND Past, monthly payment (-4) <= 0.00
+Precision: 0.98
+Coverage: 0.81
+Anchor test precision: 0.93
+Anchor test coverage: 0.16
+Partial anchor: Past, monthly payment (-5) <= 0.00 AND Past, monthly payment (-4) <= 0.00
+Partial precision: 0.98
+Partial coverage: 0.81
+Partial anchor test precision: 0.93
