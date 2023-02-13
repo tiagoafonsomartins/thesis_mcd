@@ -31,9 +31,9 @@ default_credit_cat_cols_num = [2, 3, 4]
 default_credit_num_cols_num = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
 default_credit_index = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22, 23]
 
-default_credit_no_target = ["X1","X2","X3","X4","X5","X6", "X7", "test", "test", "test", "X11", "X12", "X13", "X14", "X15", "X16", "X17","X18", "X19", "X20", "X21", "X22", "X23"]
+#default_credit_no_target = ["X1","X2","X3","X4","X5","X6", "X7", "test", "test", "test", "X11", "X12", "X13", "X14", "X15", "X16", "X17","X18", "X19", "X20", "X21", "X22", "X23"]
 #default_credit_with_target = ["X1","X2","X3","X4","X5","X6", "X7", "X8", "X9", "X10", "X11", "X12", "X13", "X14", "X15", "X16", "X17","X18", "X19", "X20", "X21", "X22", "X23", "Y"]
-default_credit_with_target = ["Given credit (NT Dollars)",
+default_credit_no_target = ["Given credit (NT$)",
                               "Gender",
                               "Education",
                               "Marital status",
@@ -44,18 +44,41 @@ default_credit_with_target = ["Given credit (NT Dollars)",
                               "Past, monthly payment (-3)",
                               "Past, monthly payment (-2)",
                               "Past, monthly payment (-1)",
-                              "Past, monthly bill statement (-6)",
-                              "Past, monthly bill statement (-5)",
-                              "Past, monthly bill statement (-4)",
-                              "Past, monthly bill statement (-3)",
-                              "Past, monthly bill statement (-2)",
-                              "Past, monthly bill statement (-1)",
-                              "Amount of previous payment in NT Dollars (-6)",
-                              "Amount of previous payment in NT Dollars (-5)",
-                              "Amount of previous payment in NT Dollars (-4)",
-                              "Amount of previous payment in NT Dollars (-3)",
-                              "Amount of previous payment in NT Dollars (-2)",
-                              "Amount of previous payment in NT Dollars (-1)",
+                              "Past, monthly bill (-6)",
+                              "Past, monthly bill (-5)",
+                              "Past, monthly bill (-4)",
+                              "Past, monthly bill (-3)",
+                              "Past, monthly bill (-2)",
+                              "Past, monthly bill (-1)",
+                              "Prev. payment in NT$ (-6)",
+                              "Prev. payment in NT$ (-5)",
+                              "Prev. payment in NT$ (-4)",
+                              "Prev. payment in NT$ (-3)",
+                              "Prev. payment in NT$ (-2)",
+                              "Prev. payment in NT$ (-1)"]
+default_credit_with_target = ["Given credit (NT$)",
+                              "Gender",
+                              "Education",
+                              "Marital status",
+                              "Age",
+                              "Past, monthly payment (-6)",
+                              "Past, monthly payment (-5)",
+                              "Past, monthly payment (-4)",
+                              "Past, monthly payment (-3)",
+                              "Past, monthly payment (-2)",
+                              "Past, monthly payment (-1)",
+                              "Past, monthly bill (-6)",
+                              "Past, monthly bill (-5)",
+                              "Past, monthly bill (-4)",
+                              "Past, monthly bill (-3)",
+                              "Past, monthly bill (-2)",
+                              "Past, monthly bill (-1)",
+                              "Prev. payment in NT$ (-6)",
+                              "Prev. payment in NT$ (-5)",
+                              "Prev. payment in NT$ (-4)",
+                              "Prev. payment in NT$ (-3)",
+                              "Prev. payment in NT$ (-2)",
+                              "Prev. payment in NT$ (-1)",
                               "Y"]
 
 # Defining categorical and numerical columns for German Credit
@@ -89,13 +112,15 @@ xgb_final = xgboost.XGBClassifier(tree_method='hist',
                                   random_state=42)
 
 random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
+
+#INICIO TESTE DATASET 1
 # Default Credit - Data preparation and split into train/test
 x_train, x_test, y_train, y_test = af.data_prep_sep_target(default_credit, "default_credit.txt", "Y", replacer=[0, 1])
 xgb_final.fit(x_train, y_train)
 af.model_evaluation(xgb_final, "Train", x_train, y_train, "default_credit_xgboost_train.txt")
 af.model_evaluation(xgb_final, "Test", x_test, y_test, "default_credit_xgboost_test.txt")
 
-exp.shap_explainer(xgb_final, x_train, default_credit.columns, "default_credit")
+exp.shap_explainer(xgb_final, x_train, default_credit_no_target, "default_credit")
 exp.lime_explainer(xgb_final, x_train, x_test, default_credit.columns, [0, 1], "default_credit")
 #train, test = af.data_prep(default_credit)
 #default_credit_anchors = anchor.utils.load_csv_dataset(default_credit)
@@ -108,6 +133,7 @@ for x in range(len(x_train[0])):
     #pdp = exp.pdp_explainer(random_forest_classifier, x_train, [x], [default_credit_with_target[x]], "default_credit")
     pdp = exp.pdp_explainer(random_forest_classifier, x_train, [x], default_credit_with_target, "default_credit")
 
+#FIM TESTE DATASET 1
 #pdp = exp.pdp_explainer(random_forest_classifier, x_train, [9], default_credit_no_target, "default_credit")
 
 # German Credit - Data preparation and split into train/test

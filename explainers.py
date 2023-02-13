@@ -1,5 +1,4 @@
 import lime
-import matplotlib as plt
 import numpy as np
 import pandas as pd
 import shap
@@ -78,16 +77,25 @@ def pdp_explainer(model, x_axis, features, feature_names, dataset_name):
 # idx - integer referring to the preferred instance for generation of explanation
 def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name, idx=0):
     permute_attack = permute.GAdvExample(feature_names=list(feature_names),
-                             sol_per_pop=30, num_parents_mating=10, cat_vars_ohe=None,
-                             num_generations=100, n_runs=10, black_list=[],
+                             sol_per_pop=30, num_parents_mating=15, cat_vars_ohe=None,
+                             num_generations=200, n_runs=10, black_list=None,
                              verbose=False, beta=.95)
 
     x_all, x_changes, x_sucess = permute_attack.attack(model, x=x_test[idx, :], x_train=x_train)
     print("X_ALL \n", x_all, "\n", "X_CHANGES", "\n", x_changes, "\n", "X_SUCCESS", "\n", x_sucess)
-    af.save_to_file_2("results/explanations/" + dataset_name + "/all_permuteattack_explanation.txt", pd.DataFrame(x_all).values)
-    af.save_to_file_2("results/explanations/" + dataset_name + "/changes_permuteattack_explanation.txt", pd.DataFrame(x_changes).values)
-    af.save_to_file_2("results/explanations/" + dataset_name + "/success_permuteattack_explanation.txt", pd.DataFrame(x_sucess).values)
-
+    print("permute_attack.results ", permute_attack.results)
+    #af.save_to_file_2("results/explanations/" + dataset_name + "/results_permuteattack_explanation.txt", pd.DataFrame(permute_attack.results).values)
+    permute_tmp = []
+    permute_tmp.append("x_all \n")
+    permute_tmp.append(pd.DataFrame(x_all).values)
+    permute_tmp.append("\n x_changes \n")
+    permute_tmp.append(pd.DataFrame(x_changes).values)
+    permute_tmp.append("\n x_success \n")
+    permute_tmp.append(pd.DataFrame(x_sucess).values)
+    #af.save_to_file_2("results/explanations/" + dataset_name + "/all_permuteattack_explanation.txt", pd.DataFrame(x_all).values)
+    #af.save_to_file_2("results/explanations/" + dataset_name + "/changes_permuteattack_explanation.txt", pd.DataFrame(x_changes).values)
+    #af.save_to_file_2("results/explanations/" + dataset_name + "/success_permuteattack_explanation.txt", pd.DataFrame(x_sucess).values)
+    af.save_to_file_2("results/explanations/" + dataset_name + "/success_permuteattack_explanation.txt", permute_tmp)
 
 '''
  Main method for SHAP/LIME explanations which aims to englobe the initialization of such methods, un-cluttering main.py
@@ -110,14 +118,37 @@ def lime_explainer(model, x_train, x_test, feature_labels, target_label, dataset
     exp.save_to_file("results/explanations/" + dataset_name + "/lime_explanation.html")
 
 # SHAP explanation framework, takes four parameters as np.array and the black-box model
-def shap_explainer(model, x, feature_names, dataset_name ):
+def shap_explainer(model, x, feature_names, dataset_name):
     shap.initjs()
-    explainer = shap.TreeExplainer(model)
-    shap_values = explainer.shap_values(x)
-    shap_interactions = explainer.shap_interaction_values(x)
+    data = pd.DataFrame(x, columns=feature_names)
+    explainer = shap.Explainer(model)
+    explainer_tree = shap.TreeExplainer(model)
+    shap_values_explainer = explainer(data)
+    shap_values = explainer_tree.shap_values(data)
 
-    shap.force_plot(explainer.expected_value, shap_values[0, :], x[0, :])
-    fig = shap.summary_plot(shap_values, x, feature_names=feature_names, plot_type="bar", show=False)
-    plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_explanation.png")
-    fig = shap.summary_plot(shap_interactions, x,  feature_names=feature_names, show=False)
-    plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_explanation_2.png")
+    fig = shap.plots.waterfall(shap_values_explainer[0], show=False)
+    plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_waterfall.png", bbox_inches="tight")
+    plt.pyplot.clf()
+    #fig = shap.force_plot(explainer_tree.expected_value, shap_values[0, :], x[0, :])
+    #plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_force_plot.png")
+    #plt.pyplot.clf()
+    #fig = shap.summary_plot(shap_values, data, feature_names=feature_names, plot_type="bar", show=False)
+    fig = shap.summary_plot(shap_values, data, plot_type="bar", show=False)
+    plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_explanation.png", bbox_inches="tight")
+    plt.pyplot.clf()
+
+    #Feature interactions is not useful...
+    #fig = shap.summary_plot(shap_interactions, data, show=False)
+    for feat in feature_names:
+        fig = shap.plots.scatter(shap_values_explainer[:, feat], show=False)
+        plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_scatter_"+feat+".png", bbox_inches="tight")
+        plt.pyplot.clf()
+
+    fig = shap.plots.force(explainer_tree.expected_value, shap_values[0], data.iloc[0,:], show=False)
+    plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_force.png")
+    plt.pyplot.clf()
+    fig = shap.plots.bar(shap_values_explainer[0], show=False)
+    plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_barplot.png", bbox_inches="tight")
+    plt.pyplot.clf()
+
+
