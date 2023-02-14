@@ -22,9 +22,16 @@ import importlib
 #
 #permuteattack = importlib.import_module("PermuteAttack-main.src")
 
+iris_target = ["sepal length (cm)",
+               "sepal width (cm)",
+               "petal length (cm)",
+               "petal width (cm)",
+               "class"]
+iris_no_target = iris_target[:iris_target.index("class")] + iris_target[iris_target.index("class")+1:]
 
 # Defining categorical and numerical columns for Credit Card
 default_credit_cat_cols = ["X2", "X3", "X4"]
+# REMOVE RETIRA DA LISTA ORIGINAL!!!!!
 default_credit_num_cols = ["X1","X5","X6","X7","X8","X9","X10","X11","X12","X13","X14","X15","X16","X17","X18","X19","X20","X21","X22","X23","Y"]
 default_credit_num_cols_no_target = default_credit_num_cols.remove("Y")
 default_credit_cat_cols_num = [2, 3, 4]
@@ -61,24 +68,24 @@ default_credit_with_target = ["Given credit (NT$)",
                               "Education",
                               "Marital status",
                               "Age",
-                              "Past, monthly payment (-6)",
-                              "Past, monthly payment (-5)",
-                              "Past, monthly payment (-4)",
-                              "Past, monthly payment (-3)",
-                              "Past, monthly payment (-2)",
                               "Past, monthly payment (-1)",
-                              "Past, monthly bill (-6)",
-                              "Past, monthly bill (-5)",
-                              "Past, monthly bill (-4)",
-                              "Past, monthly bill (-3)",
-                              "Past, monthly bill (-2)",
+                              "Past, monthly payment (-2)",
+                              "Past, monthly payment (-3)",
+                              "Past, monthly payment (-4)",
+                              "Past, monthly payment (-5)",
+                              "Past, monthly payment (-6)",
                               "Past, monthly bill (-1)",
-                              "Prev. payment in NT$ (-6)",
-                              "Prev. payment in NT$ (-5)",
-                              "Prev. payment in NT$ (-4)",
-                              "Prev. payment in NT$ (-3)",
-                              "Prev. payment in NT$ (-2)",
+                              "Past, monthly bill (-2)",
+                              "Past, monthly bill (-3)",
+                              "Past, monthly bill (-4)",
+                              "Past, monthly bill (-5)",
+                              "Past, monthly bill (-6)",
                               "Prev. payment in NT$ (-1)",
+                              "Prev. payment in NT$ (-2)",
+                              "Prev. payment in NT$ (-3)",
+                              "Prev. payment in NT$ (-4)",
+                              "Prev. payment in NT$ (-5)",
+                              "Prev. payment in NT$ (-6)",
                               "Y"]
 
 # Defining categorical and numerical columns for German Credit
@@ -92,12 +99,14 @@ german_num_cols = ["duration","amount","installment_rate","residence_since","age
 
 
 # Reading the 3 datasets
+# Default Credit target feat. values: 1 = Default; 0 = Not default
 default_credit = pd.read_csv("datasets/default of credit card clients.csv", delimiter=';', header=0)
 default_credit.columns = default_credit_with_target
 default_credit_anchors = pd.read_csv("datasets/default of credit card clients.csv", index_col=None, delimiter=';', header=None)
 default_credit_anchors.columns = default_credit_with_target
 #german_credit = pd.read_csv("datasets/german_data.csv", delimiter=';', header=0)
-iris = pd.read_csv("datasets/iris.csv", delimiter=',', header=0)
+iris = pd.read_csv("datasets/iris.csv", delimiter=';', header=None)
+iris.columns = iris_target
 german_credit_num = pd.read_csv("datasets/german.data-numeric.csv", delimiter=';', header=0)
 heloc = pd.read_csv("datasets/heloc_dataset_v1.csv", delimiter=',', header=0)
 
@@ -113,12 +122,12 @@ xgb_final = xgboost.XGBClassifier(tree_method='hist',
 
 random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
 
-#INICIO TESTE DATASET 1
+# INICIO TESTE DATASET DEFAULT CREDIT
 # Default Credit - Data preparation and split into train/test
 x_train, x_test, y_train, y_test = af.data_prep_sep_target(default_credit, "default_credit.txt", "Y", replacer=[0, 1])
 xgb_final.fit(x_train, y_train)
-af.model_evaluation(xgb_final, "Train", x_train, y_train, "default_credit_xgboost_train.txt")
-af.model_evaluation(xgb_final, "Test", x_test, y_test, "default_credit_xgboost_test.txt")
+af.model_evaluation(xgb_final, "Train", x_train, y_train, 2,"default_credit_xgboost_train.txt")
+af.model_evaluation(xgb_final, "Test", x_test, y_test, 2, "default_credit_xgboost_test.txt")
 
 exp.shap_explainer(xgb_final, x_train, default_credit_no_target, "default_credit")
 exp.lime_explainer(xgb_final, x_train, x_test, default_credit.columns, [0, 1], "default_credit")
@@ -133,13 +142,33 @@ for x in range(len(x_train[0])):
     #pdp = exp.pdp_explainer(random_forest_classifier, x_train, [x], [default_credit_with_target[x]], "default_credit")
     pdp = exp.pdp_explainer(random_forest_classifier, x_train, [x], default_credit_with_target, "default_credit")
 
-#FIM TESTE DATASET 1
+# FIM TESTE DATASET 1
 #pdp = exp.pdp_explainer(random_forest_classifier, x_train, [9], default_credit_no_target, "default_credit")
 
 # German Credit - Data preparation and split into train/test
 # x_train, x_test, y_train, y_test = af.data_prep(german_credit, "german_credit.txt", "risk", replacer = [1, 2])
 
+# INICIO TESTE DATASET IRIS
+# Default Credit - Data preparation and split into train/test
+x_train, x_test, y_train, y_test = af.data_prep_sep_target(iris, "iris.txt", "class", val_replacer_origin=['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], replacer=[0, 1, 2])
+xgb_final.fit(x_train, y_train)
+af.model_evaluation(xgb_final, "Train", x_train, y_train, len(iris["class"].unique()), "iris_xgboost_train.txt")
+af.model_evaluation(xgb_final, "Test", x_test, y_test, len(iris["class"].unique()), "iris_xgboost_test.txt")
 
+#exp.shap_explainer(xgb_final, x_train, iris_no_target, "iris", multioutput=True)
+exp.lime_explainer(xgb_final, x_train, x_test, iris.columns, [0, 1, 2], "iris")
+#train, test = af.data_prep(default_credit)
+#default_credit_anchors = anchor.utils.load_csv_dataset(default_credit)
+
+random_forest_classifier.fit(x_train, y_train)
+exp.anchor_explainer(random_forest_classifier, iris.values, 23, iris.columns, default_credit_index, iris_target, "iris")
+
+exp.permuteattack_explainer(random_forest_classifier, iris_no_target, x_train, x_test, "iris")
+for x in range(len(x_train[0])):
+    #pdp = exp.pdp_explainer(random_forest_classifier, x_train, [x], [default_credit_with_target[x]], "default_credit")
+    pdp = exp.pdp_explainer(random_forest_classifier, x_train, [x], iris_target, "iris")
+
+# FIM TESTE DATASET 1
 
 
 

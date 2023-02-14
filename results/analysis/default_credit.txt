@@ -9,30 +9,30 @@ Data columns (total 24 columns):
  2   Education                   30000 non-null  int64
  3   Marital status              30000 non-null  int64
  4   Age                         30000 non-null  int64
- 5   Past, monthly payment (-6)  30000 non-null  int64
- 6   Past, monthly payment (-5)  30000 non-null  int64
- 7   Past, monthly payment (-4)  30000 non-null  int64
- 8   Past, monthly payment (-3)  30000 non-null  int64
- 9   Past, monthly payment (-2)  30000 non-null  int64
- 10  Past, monthly payment (-1)  30000 non-null  int64
- 11  Past, monthly bill (-6)     30000 non-null  int64
- 12  Past, monthly bill (-5)     30000 non-null  int64
- 13  Past, monthly bill (-4)     30000 non-null  int64
- 14  Past, monthly bill (-3)     30000 non-null  int64
- 15  Past, monthly bill (-2)     30000 non-null  int64
- 16  Past, monthly bill (-1)     30000 non-null  int64
- 17  Prev. payment in NT$ (-6)   30000 non-null  int64
- 18  Prev. payment in NT$ (-5)   30000 non-null  int64
- 19  Prev. payment in NT$ (-4)   30000 non-null  int64
- 20  Prev. payment in NT$ (-3)   30000 non-null  int64
- 21  Prev. payment in NT$ (-2)   30000 non-null  int64
- 22  Prev. payment in NT$ (-1)   30000 non-null  int64
+ 5   Past, monthly payment (-1)  30000 non-null  int64
+ 6   Past, monthly payment (-2)  30000 non-null  int64
+ 7   Past, monthly payment (-3)  30000 non-null  int64
+ 8   Past, monthly payment (-4)  30000 non-null  int64
+ 9   Past, monthly payment (-5)  30000 non-null  int64
+ 10  Past, monthly payment (-6)  30000 non-null  int64
+ 11  Past, monthly bill (-1)     30000 non-null  int64
+ 12  Past, monthly bill (-2)     30000 non-null  int64
+ 13  Past, monthly bill (-3)     30000 non-null  int64
+ 14  Past, monthly bill (-4)     30000 non-null  int64
+ 15  Past, monthly bill (-5)     30000 non-null  int64
+ 16  Past, monthly bill (-6)     30000 non-null  int64
+ 17  Prev. payment in NT$ (-1)   30000 non-null  int64
+ 18  Prev. payment in NT$ (-2)   30000 non-null  int64
+ 19  Prev. payment in NT$ (-3)   30000 non-null  int64
+ 20  Prev. payment in NT$ (-4)   30000 non-null  int64
+ 21  Prev. payment in NT$ (-5)   30000 non-null  int64
+ 22  Prev. payment in NT$ (-6)   30000 non-null  int64
  23  Y                           30000 non-null  int64
 dtypes: int64(24)
 memory usage: 5.5 MB
 
 ---Data Description---
-       Given credit (NT$)        Gender     Education  Marital status           Age  Past, monthly payment (-6)  Past, monthly payment (-5)  Past, monthly payment (-4)  Past, monthly payment (-3)  Past, monthly payment (-2)  Past, monthly payment (-1)  Past, monthly bill (-6)  Past, monthly bill (-5)  Past, monthly bill (-4)  Past, monthly bill (-3)  Past, monthly bill (-2)  Past, monthly bill (-1)  Prev. payment in NT$ (-6)  Prev. payment in NT$ (-5)  Prev. payment in NT$ (-4)  Prev. payment in NT$ (-3)  Prev. payment in NT$ (-2)  Prev. payment in NT$ (-1)             Y
+       Given credit (NT$)        Gender     Education  Marital status           Age  Past, monthly payment (-1)  Past, monthly payment (-2)  Past, monthly payment (-3)  Past, monthly payment (-4)  Past, monthly payment (-5)  Past, monthly payment (-6)  Past, monthly bill (-1)  Past, monthly bill (-2)  Past, monthly bill (-3)  Past, monthly bill (-4)  Past, monthly bill (-5)  Past, monthly bill (-6)  Prev. payment in NT$ (-1)  Prev. payment in NT$ (-2)  Prev. payment in NT$ (-3)  Prev. payment in NT$ (-4)  Prev. payment in NT$ (-5)  Prev. payment in NT$ (-6)             Y
 count        30000.000000  30000.000000  30000.000000    30000.000000  30000.000000                30000.000000                30000.000000                30000.000000                30000.000000                30000.000000                30000.000000             30000.000000             30000.000000             3.000000e+04             30000.000000             30000.000000             30000.000000               30000.000000               3.000000e+04                30000.00000               30000.000000               30000.000000               30000.000000  30000.000000
 mean        167484.322667      1.603733      1.853133        1.551867     35.485500                   -0.016700                   -0.133767                   -0.166200                   -0.220667                   -0.266200                   -0.291100             51223.330900             49179.075167             4.701315e+04             43262.948967             40311.400967             38871.760400                5663.580500               5.921163e+03                 5225.68150                4826.076867                4799.387633                5215.502567      0.221200
 std         129747.661567      0.489129      0.790349        0.521970      9.217904                    1.123802                    1.197186                    1.196868                    1.169139                    1.133187                    1.149988             73635.860576             71173.768783             6.934939e+04             64332.856134             60797.155770             59554.107537               16563.280354               2.304087e+04                17606.96147               15666.159744               15278.305679               17777.465775      0.415062

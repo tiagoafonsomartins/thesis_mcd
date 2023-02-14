@@ -118,16 +118,28 @@ def data_prep(dataframe):
 # feature -
 # target -
 # filename - str containing name of saved file
-def model_evaluation(model, title, feature, target, filename):
+def model_evaluation(model, title, feature, target, target_values, filename):
     scores = pd.DataFrame()
     pred = model.predict(feature)
     acc = accuracy_score(target, pred)
-    roc_auc = roc_auc_score(target, pred)
-    f1 = f1_score(target, pred)
-    prec = precision_score(target, pred)
-    recall = recall_score(target, pred)
-    scores[title] = [acc, roc_auc, f1, prec, recall]
-    scores.index = ['Accuracy', 'ROC_AUC', 'F1_Score', 'Precision_Score', 'Recall_Score']
+    if target_values > 2:
+    #    roc_auc = roc_auc_score(target, model.predict_proba(pred), multi_class="ovr")
+    #else:
+    #    roc_auc = roc_auc_score(target, pred)
+        f1 = f1_score(target, pred, average="weighted")
+        prec = precision_score(target, pred, average="weighted")
+        recall = recall_score(target, pred, average="weighted")
+    else:
+        f1 = f1_score(target, pred)
+        prec = precision_score(target, pred)
+        recall = recall_score(target, pred)
+    #prec = precision_score(target, pred)
+    #recall = recall_score(target, pred)
+    #scores[title] = [acc, roc_auc, f1, prec, recall]
+    scores[title] = [acc, f1, prec, recall]
+    #scores.index = ['Accuracy', 'ROC_AUC', 'F1_Score', 'Precision_Score', 'Recall_Score']
+    scores.index = ['Accuracy', 'F1_Score', 'Precision_Score', 'Recall_Score']
+
     save_to_file("results/model_performance/" + filename, scores.to_string(), "")
     return scores
 

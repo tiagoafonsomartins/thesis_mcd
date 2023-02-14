@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_div506MXOKR68QEEFC"></div>
+        <div class="lime top_div" id="top_divCFZ7KW7EIFMH2QX"></div>
         
         <script>
-        var top_div = d3.select('#top_div506MXOKR68QEEFC').classed('lime top_div', true);
+        var top_div = d3.select('#top_divCFZ7KW7EIFMH2QX').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["0", "1"], [0.9559465646743774, 0.044053416699171066]);
+            var pp = new lime.PredictProba(pp_svg, ["0", "1", "2"], [0.013591306284070015, 0.02107601799070835, 0.9653326869010925]);
             
         
         var exp_div;
-            var exp = new lime.Explanation(["0", "1"]);
+            var exp = new lime.Explanation(["0", "1", "2"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["Prev. payment in NT$ (-1)", -0.043436456847925374], ["Given credit (NT$)", -0.04144628163555376], ["Past, monthly bill (-5)", -0.034023214376611315], ["Prev. payment in NT$ (-2)", -0.02917923519447107], ["Past, monthly bill (-6)", 0.028669651263396947], ["Past, monthly bill (-1)", 0.02517707597025436], ["Past, monthly bill (-4)", 0.024405137144063182], ["Past, monthly payment (-1)", 0.01989198296958298], ["Prev. payment in NT$ (-3)", -0.015630375792334308], ["Past, monthly payment (-4)", -0.01512307874356296], ["Prev. payment in NT$ (-5)", -0.011830975260314812], ["Past, monthly payment (-3)", 0.011591437129801463], ["Prev. payment in NT$ (-4)", -0.011491374713323644], ["Past, monthly payment (-6)", 0.00722140100237977], ["Past, monthly payment (-2)", 0.005716978385804902], ["Gender", -0.004272329014588634], ["Education", -0.0041149296787177745], ["Marital status", 0.003519710593311877], ["Past, monthly bill (-3)", -0.002808725938083066], ["Past, monthly bill (-2)", -0.0014003727131175923], ["Past, monthly payment (-5)", 0.0012843057844997023], ["Prev. payment in NT$ (-6)", -0.0011167639249461455], ["Age", 0.00049474855794208]], 1, exp_div);
+                exp.show([["petal length (cm)", -0.16196143209108885], ["sepal length (cm)", 0.139596032972021], ["petal width (cm)", -0.13848968030425135], ["sepal width (cm)", -0.007647310126887733]], 1, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_tabular([["Prev. payment in NT$ (-1)", "5000.00", -0.043436456847925374], ["Given credit (NT$)", "100000.00", -0.04144628163555376], ["Past, monthly bill (-5)", "18774.00", -0.034023214376611315], ["Prev. payment in NT$ (-2)", "2000.00", -0.02917923519447107], ["Past, monthly bill (-6)", "20272.00", 0.028669651263396947], ["Past, monthly bill (-1)", "98430.00", 0.02517707597025436], ["Past, monthly bill (-4)", "17758.00", 0.024405137144063182], ["Past, monthly payment (-1)", "0.00", 0.01989198296958298], ["Prev. payment in NT$ (-3)", "2000.00", -0.015630375792334308], ["Past, monthly payment (-4)", "0.00", -0.01512307874356296], ["Prev. payment in NT$ (-5)", "2000.00", -0.011830975260314812], ["Past, monthly payment (-3)", "0.00", 0.011591437129801463], ["Prev. payment in NT$ (-4)", "2000.00", -0.011491374713323644], ["Past, monthly payment (-6)", "0.00", 0.00722140100237977], ["Past, monthly payment (-2)", "0.00", 0.005716978385804902], ["Gender", "1.00", -0.004272329014588634], ["Education", "2.00", -0.0041149296787177745], ["Marital status", "1.00", 0.003519710593311877], ["Past, monthly bill (-3)", "16138.00", -0.002808725938083066], ["Past, monthly bill (-2)", "99998.00", -0.0014003727131175923], ["Past, monthly payment (-5)", "0.00", 0.0012843057844997023], ["Prev. payment in NT$ (-6)", "2000.00", -0.0011167639249461455], ["Age", "42.00", 0.00049474855794208]], 1, raw_div);
+            exp.show_raw_tabular([["petal length (cm)", "6.30", -0.16196143209108885], ["sepal length (cm)", "7.30", 0.139596032972021], ["petal width (cm)", "1.80", -0.13848968030425135], ["sepal width (cm)", "2.90", -0.007647310126887733]], 1, raw_div);
         
         </script>
         </body></html>

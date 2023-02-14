@@ -118,17 +118,23 @@ def lime_explainer(model, x_train, x_test, feature_labels, target_label, dataset
     exp.save_to_file("results/explanations/" + dataset_name + "/lime_explanation.html")
 
 # SHAP explanation framework, takes four parameters as np.array and the black-box model
-def shap_explainer(model, x, feature_names, dataset_name):
+def shap_explainer(model, x, feature_names,  dataset_name, multioutput=False):
     shap.initjs()
     data = pd.DataFrame(x, columns=feature_names)
     explainer = shap.Explainer(model)
     explainer_tree = shap.TreeExplainer(model)
     shap_values_explainer = explainer(data)
     shap_values = explainer_tree.shap_values(data)
+    if multioutput:
+        #fig = shap.waterfall(explainer_tree.expected_value[0], shap_values[0], x, show=False)
+        #fig = shap.plots.waterfall(shap_values_explainer[0], show=False)
+        print("yes")
+    else:
+        fig = shap.plots.waterfall(shap_values_explainer[0], show=False)
+        plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_waterfall.png", bbox_inches="tight")
+        plt.pyplot.clf()
 
-    fig = shap.plots.waterfall(shap_values_explainer[0], show=False)
-    plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_waterfall.png", bbox_inches="tight")
-    plt.pyplot.clf()
+
     #fig = shap.force_plot(explainer_tree.expected_value, shap_values[0, :], x[0, :])
     #plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_force_plot.png")
     #plt.pyplot.clf()
