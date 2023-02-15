@@ -16,7 +16,7 @@ from models.anchor.anchor import utils as anchor_utils, anchor_tabular as anchor
 # idx - integer referring to the preferred instance for generation of explanation
 def anchor_explainer(model, dataset, class_name, feature_names, features_to_use, categorical_features, dataset_name):
 
-    dataset_anchors = anchor_utils.load_csv_dataset(dataset, features_to_use=features_to_use, feature_names=feature_names, categorical_features=categorical_features,target_idx=class_name, skip_first=True)
+    dataset_anchors = anchor_utils.load_csv_dataset(dataset, features_to_use=features_to_use, feature_names=feature_names, categorical_features=None, target_idx=class_name, skip_first=True)
 
 
     explainer = anchor_tabular.AnchorTabularExplainer(
@@ -58,15 +58,23 @@ def anchor_explainer(model, dataset, class_name, feature_names, features_to_use,
     af.save_to_file_2("results/explanations/"+dataset_name+"/anchors.txt", anchors_data)
 
 
-def pdp_explainer(model, x_axis, features, feature_names, dataset_name):
+def pdp_explainer(model, x_axis, features, feature_names, dataset_name, target=None):
     print("features \n", features, "\n", "feat names \n", feature_names, "\n")
-    pdp_results = partial_dependence(model, x_axis, features)
-    pdp = PartialDependenceDisplay.from_estimator(model, x_axis, features=features, feature_names=feature_names)
-    #plot_partial_dependence(model, x_axis, features=features, feature_names=feature_names)
-
     deciles = {0: np.linspace(0, 1, num=5)}
+
+    if target != None:
+        for target_class in model.classes_:
+            print(target_class)
+            pdp_results = partial_dependence(model, x_axis, features)
+            pdp = PartialDependenceDisplay.from_estimator(model, x_axis, features=features, feature_names=feature_names, target=target_class)
+            plt.pyplot.savefig("results/explanations/"+dataset_name+"/"+str(features[0])+"_target-"+str(target_class)+"_"+"_pdp_explanation.png")
+    else:
+        pdp_results = partial_dependence(model, x_axis, features)
+        pdp = PartialDependenceDisplay.from_estimator(model, x_axis, features=features, feature_names=feature_names)
+        plt.pyplot.savefig("results/explanations/"+dataset_name+"/"+str(features[0])+"_pdp_explanation.png")
+#plot_partial_dependence(model, x_axis, features=features, feature_names=feature_names)
+
     #pdp = PartialDependenceDisplay([pdp_results], target_idx=0, features=features, feature_names=feature_names, deciles=deciles)
-    plt.pyplot.savefig("results/explanations/"+dataset_name+"/"+str(features[0])+"_pdp_explanation.png")
     #plt.pyplot.show()
 
 
@@ -121,40 +129,50 @@ def lime_explainer(model, x_train, x_test, feature_labels, target_label, dataset
 def shap_explainer(model, x, feature_names,  dataset_name, multioutput=False):
     shap.initjs()
     data = pd.DataFrame(x, columns=feature_names)
-    explainer = shap.Explainer(model)
-    explainer_tree = shap.TreeExplainer(model)
-    shap_values_explainer = explainer(data)
-    shap_values = explainer_tree.shap_values(data)
+    #explainer = shap.KernelExplainer(model.predict_proba, data)
+
+    #shap_values = explainer_tree.shap_values(data)
     if multioutput:
+        explainer = shap.KernelExplainer(model.predict_proba, data)
+        shap_values = explainer.shap_values(data)
         #fig = shap.waterfall(explainer_tree.expected_value[0], shap_values[0], x, show=False)
-        #fig = shap.plots.waterfall(shap_values_explainer[0], show=False)
-        print("yes")
+        shap.summary_plot(shap_values, data, class_names=model.classes_, show=False)
+        plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_summary.png", bbox_inches="tight")
+        plt.pyplot.clf()
+        #shap.waterfall_plot(explainer.expected_value[0], shap_values[0][0], show=False)
+        shap.force_plot(explainer.expected_value[0], shap_values[0], data)
+        plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_force.png", bbox_inches="tight")
+        plt.pyplot.clf()
     else:
-        fig = shap.plots.waterfall(shap_values_explainer[0], show=False)
+        explainer = shap.Explainer(model)
+        shap_values = explainer(data)
+        shap.plots.waterfall(shap_values[0], show=False)
         plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_waterfall.png", bbox_inches="tight")
         plt.pyplot.clf()
-
-
-    #fig = shap.force_plot(explainer_tree.expected_value, shap_values[0, :], x[0, :])
-    #plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_force_plot.png")
-    #plt.pyplot.clf()
-    #fig = shap.summary_plot(shap_values, data, feature_names=feature_names, plot_type="bar", show=False)
-    fig = shap.summary_plot(shap_values, data, plot_type="bar", show=False)
-    plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_explanation.png", bbox_inches="tight")
-    plt.pyplot.clf()
-
-    #Feature interactions is not useful...
-    #fig = shap.summary_plot(shap_interactions, data, show=False)
-    for feat in feature_names:
-        fig = shap.plots.scatter(shap_values_explainer[:, feat], show=False)
-        plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_scatter_"+feat+".png", bbox_inches="tight")
+        #fig = shap.force_plot(explainer_tree.expected_value, shap_values[0, :], x[0, :])
+        #plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_force_plot.png")
+        #plt.pyplot.clf()
+        shap.summary_plot(shap_values, data, plot_type="bar", show=False)
+        #fig = shap.summary_plot(shap_values.shap_values(data), data, plot_type="bar", show=False)
+        plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_summary_plot.png", bbox_inches="tight")
         plt.pyplot.clf()
 
-    fig = shap.plots.force(explainer_tree.expected_value, shap_values[0], data.iloc[0,:], show=False)
-    plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_force.png")
-    plt.pyplot.clf()
-    fig = shap.plots.bar(shap_values_explainer[0], show=False)
-    plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_barplot.png", bbox_inches="tight")
-    plt.pyplot.clf()
+        #Feature interactions is not useful...
+        #fig = shap.summary_plot(shap_interactions, data, show=False)
+        for feat in feature_names:
+            #fig = shap.plots.scatter(shap_values.shap_values(data)[:, feat], show=False)
+            shap.plots.scatter(shap_values[:, feat], show=False)
+            plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_scatter_"+feat+".png", bbox_inches="tight")
+            plt.pyplot.clf()
+
+        #shap.plots.force(explainer.expected_value, shap_values[0], data.iloc[0,:], show=False)
+        #plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_force.png")
+        #plt.pyplot.clf()
+        shap.plots.bar(shap_values[0], show=False)
+        plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_barplot.png", bbox_inches="tight")
+        plt.pyplot.clf()
+
+
+
 
 

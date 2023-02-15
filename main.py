@@ -6,21 +6,21 @@ import xgboost
 
 import explainers as exp
 
-import importlib
-#anchor = importlib.import_module("models.anchor-master.anchor")
-#print(anchor)
-#import anchor.utils
-#import anchor.anchor_tabular
-#from anchor.utils import map_array_values
-#clear = importlib.import_module("models.CLEAR-master")
-#
-#dice = importlib.import_module("models.DiCE.dice_ml")
-#
-#anomaly = importlib.import_module("models.Locally-Interpretable-One-Class-Anomaly-Detection-for-Credit-Card-Fraud-Detection-main")
-#
-#pastle = importlib.import_module("models.PASTLE-main.src")
-#
-#permuteattack = importlib.import_module("PermuteAttack-main.src")
+
+def analysis_explanation(dataset, model,  dataset_cols, target, dataset_name, model_name, target_name, target_idx, replacer):
+    x_train, x_test, y_train, y_test = af.data_prep_sep_target(dataset, dataset_name+".txt", target_name, replacer=replacer)
+    model.fit(x_train, y_train)
+    af.model_evaluation(model, "Train", x_train, y_train, 2, dataset_name+"_"+model_name+"_train.txt")
+    af.model_evaluation(model, "Test", x_test, y_test, 2, dataset_name+"_"+model_name+"_test.txt")
+
+    exp.shap_explainer(model, x_train, dataset_cols, dataset_name)
+    exp.lime_explainer(model, x_train, x_test, dataset.columns, target, dataset_name)
+    exp.anchor_explainer(model, dataset.values, target_idx, dataset.columns, default_credit_index, default_credit_cat_cols_num, "default_credit")
+    dataset_no_target = dataset[:dataset.index(target_name)] + dataset[dataset.index(target_name)+1:]
+    exp.permuteattack_explainer(model, dataset_no_target.columns, x_train, x_test, dataset_name)
+    for x in range(len(x_train[0])):
+    #pdp = exp.pdp_explainer(random_forest_classifier, x_train, [x], [default_credit_with_target[x]], "default_credit")
+        pdp = exp.pdp_explainer(model, x_train, [x], dataset.columns, dataset_name, target_idx)
 
 iris_target = ["sepal length (cm)",
                "sepal width (cm)",
@@ -138,9 +138,9 @@ random_forest_classifier.fit(x_train, y_train)
 exp.anchor_explainer(random_forest_classifier, default_credit_anchors.values, 23, default_credit_anchors.columns, default_credit_index, default_credit_cat_cols_num, "default_credit")
 
 exp.permuteattack_explainer(random_forest_classifier, default_credit_no_target, x_train, x_test, "default_credit")
-for x in range(len(x_train[0])):
+#for x in range(len(x_train[0])):
     #pdp = exp.pdp_explainer(random_forest_classifier, x_train, [x], [default_credit_with_target[x]], "default_credit")
-    pdp = exp.pdp_explainer(random_forest_classifier, x_train, [x], default_credit_with_target, "default_credit")
+#    pdp = exp.pdp_explainer(random_forest_classifier, x_train, [x], default_credit_with_target, "default_credit", 23)
 
 # FIM TESTE DATASET 1
 #pdp = exp.pdp_explainer(random_forest_classifier, x_train, [9], default_credit_no_target, "default_credit")
@@ -155,18 +155,18 @@ xgb_final.fit(x_train, y_train)
 af.model_evaluation(xgb_final, "Train", x_train, y_train, len(iris["class"].unique()), "iris_xgboost_train.txt")
 af.model_evaluation(xgb_final, "Test", x_test, y_test, len(iris["class"].unique()), "iris_xgboost_test.txt")
 
-#exp.shap_explainer(xgb_final, x_train, iris_no_target, "iris", multioutput=True)
+exp.shap_explainer(xgb_final, x_train, iris_no_target, "iris", multioutput=True)
 exp.lime_explainer(xgb_final, x_train, x_test, iris.columns, [0, 1, 2], "iris")
 #train, test = af.data_prep(default_credit)
 #default_credit_anchors = anchor.utils.load_csv_dataset(default_credit)
 
 random_forest_classifier.fit(x_train, y_train)
-exp.anchor_explainer(random_forest_classifier, iris.values, 23, iris.columns, default_credit_index, iris_target, "iris")
+#exp.anchor_explainer(random_forest_classifier, iris.values, 4, iris.columns, [1, 2, 3, 4], iris_target, "iris")
 
 exp.permuteattack_explainer(random_forest_classifier, iris_no_target, x_train, x_test, "iris")
 for x in range(len(x_train[0])):
     #pdp = exp.pdp_explainer(random_forest_classifier, x_train, [x], [default_credit_with_target[x]], "default_credit")
-    pdp = exp.pdp_explainer(random_forest_classifier, x_train, [x], iris_target, "iris")
+    pdp = exp.pdp_explainer(random_forest_classifier, x_train, [x], iris_target, "iris", 4)
 
 # FIM TESTE DATASET 1
 
