@@ -1,9 +1,9 @@
-Anchor: Past, monthly payment (-2) = -1 AND Past, monthly payment (-3) = -1
-Precision: 0.96
-Coverage: 0.16
-Anchor test precision: 0.94
-Anchor test coverage: 0.16
-Partial anchor: Past, monthly payment (-2) = -1 AND Past, monthly payment (-3) = -1
-Partial precision: 0.96
-Partial coverage: 0.16
-Partial anchor test precision: 0.94
+Anchor: Past, monthly payment (-2) <= nan AND Prev. payment in NT$ (-5) <= nan AND Past, monthly bill (-6) <= nan AND Prev. payment in NT$ (-1) <= nan AND Prev. payment in NT$ (-4) <= nan AND Prev. payment in NT$ (-3) <= nan AND Past, monthly payment (-5) <= nan AND Prev. payment in NT$ (-2) <= nan AND Past, monthly bill (-3) <= nan AND Y <= nan AND Past, monthly bill (-2) <= nan AND Marital status <= nan AND Past, monthly bill (-1) <= nan AND Age <= nan AND Past, monthly bill (-4) <= nan AND Past, monthly payment (-3) <= nan AND Gender <= nan AND Past, monthly payment (-4) <= nan AND Education <= nan AND Past, monthly payment (-1) <= nan AND Prev. payment in NT$ (-6) <= nan AND Past, monthly bill (-5) <= nan AND Past, monthly payment (-6) <= nan
+Precision: 0.89
+Coverage: 1.00
+Anchor test precision: 1.00
+Anchor test coverage: 0.00
+Partial anchor: Past, monthly payment (-2) <= nan AND Prev. payment in NT$ (-5) <= nan
+Partial precision: 0.89
+Partial coverage: 1.00
+Partial anchor test precision: 1.00

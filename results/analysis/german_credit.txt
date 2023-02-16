@@ -1,46 +1,42 @@
 ---Data info---
 <class 'pandas.core.frame.DataFrame'>
 RangeIndex: 1000 entries, 0 to 999
-Data columns (total 25 columns):
- #   Column                 Non-Null Count  Dtype
----  ------                 --------------  -----
- 0   status                 1000 non-null   int64
- 1   duration               1000 non-null   int64
- 2   history                1000 non-null   int64
- 3   purpose                1000 non-null   int64
- 4   amount                 1000 non-null   int64
- 5   savings                1000 non-null   int64
- 6   employment_since       1000 non-null   int64
- 7   installment_rate       1000 non-null   int64
- 8   personal_status        1000 non-null   int64
- 9   debtors                1000 non-null   int64
- 10  residence_since        1000 non-null   int64
- 11  property               1000 non-null   int64
- 12  age                    1000 non-null   int64
- 13  installment_plans      1000 non-null   int64
- 14  housing                1000 non-null   int64
- 15  credits_bank           1000 non-null   int64
- 16  job                    1000 non-null   int64
- 17  liable_to_maintenance  1000 non-null   int64
- 18  telephone              1000 non-null   int64
- 19  foreign_worker         1000 non-null   int64
- 20  risk                   1000 non-null   int64
- 21  cost_matrix_1          1000 non-null   int64
- 22  cost_matrix_2          1000 non-null   int64
- 23  cost_matrix_3          1000 non-null   int64
- 24  cost_matrix_4          1000 non-null   int64
-dtypes: int64(25)
-memory usage: 195.4 KB
+Data columns (total 21 columns):
+ #   Column                                  Non-Null Count  Dtype
+---  ------                                  --------------  -----
+ 0   Status of existing checking account     1000 non-null   int64
+ 1   Duration in month                       1000 non-null   int64
+ 2   Credit history                          1000 non-null   int64
+ 3   Purpose                                 1000 non-null   int64
+ 4   Credit amount                           1000 non-null   int64
+ 5   Savings account or bonds                1000 non-null   int64
+ 6   Present employment since                1000 non-null   int64
+ 7   Install. rate (%) of disposable income  1000 non-null   int64
+ 8   Personal status and sex                 1000 non-null   int64
+ 9   Other debtors or guarantors             1000 non-null   int64
+ 10  Present residence since                 1000 non-null   int64
+ 11  Property                                1000 non-null   int64
+ 12  Age in years                            1000 non-null   int64
+ 13  Other installment plans                 1000 non-null   int64
+ 14  Housing                                 1000 non-null   int64
+ 15  No. of existing credits at this bank    1000 non-null   int64
+ 16  Job                                     1000 non-null   int64
+ 17  No. people being liable for             1000 non-null   int64
+ 18  Telephone                               1000 non-null   int64
+ 19  Foreign worker                          1000 non-null   int64
+ 20  Risk                                    1000 non-null   int64
+dtypes: int64(21)
+memory usage: 164.2 KB
 
 ---Data Description---
-            status     duration     history      purpose       amount      savings  employment_since  installment_rate  personal_status      debtors  residence_since     property          age  installment_plans      housing  credits_bank          job  liable_to_maintenance    telephone  foreign_worker         risk  cost_matrix_1  cost_matrix_2  cost_matrix_3  cost_matrix_4
-count  1000.000000  1000.000000  1000.00000  1000.000000  1000.000000  1000.000000        1000.00000       1000.000000      1000.000000  1000.000000      1000.000000  1000.000000  1000.000000        1000.000000  1000.000000   1000.000000  1000.000000            1000.000000  1000.000000     1000.000000  1000.000000    1000.000000      1000.0000    1000.000000    1000.000000
-mean      2.577000    20.903000     2.54500    32.711000     2.105000     3.384000           2.68200          2.845000         2.358000    35.546000         2.675000     1.407000     1.155000           1.404000     1.037000      0.234000     0.103000               0.907000     0.041000        0.179000     0.713000       0.022000         0.2000       0.630000       1.300000
-std       1.257638    12.058814     1.08312    28.252605     1.580023     1.208306           0.70808          1.103718         1.050209    11.375469         0.705601     0.577654     0.362086           0.490943     0.188856      0.423584     0.304111               0.290578     0.198389        0.383544     0.452588       0.146757         0.4002       0.483046       0.458487
-min       1.000000     4.000000     0.00000     2.000000     1.000000     1.000000           1.00000          1.000000         1.000000    19.000000         1.000000     1.000000     1.000000           1.000000     1.000000      0.000000     0.000000               0.000000     0.000000        0.000000     0.000000       0.000000         0.0000       0.000000       1.000000
-25%       1.000000    12.000000     2.00000    14.000000     1.000000     3.000000           2.00000          2.000000         1.000000    27.000000         3.000000     1.000000     1.000000           1.000000     1.000000      0.000000     0.000000               1.000000     0.000000        0.000000     0.000000       0.000000         0.0000       0.000000       1.000000
-50%       2.000000    18.000000     2.00000    23.000000     1.000000     3.000000           3.00000          3.000000         2.000000    33.000000         3.000000     1.000000     1.000000           1.000000     1.000000      0.000000     0.000000               1.000000     0.000000        0.000000     1.000000       0.000000         0.0000       1.000000       1.000000
-75%       4.000000    24.000000     4.00000    40.000000     3.000000     5.000000           3.00000          4.000000         3.000000    42.000000         3.000000     2.000000     1.000000           2.000000     1.000000      0.000000     0.000000               1.000000     0.000000        0.000000     1.000000       0.000000         0.0000       1.000000       2.000000
-max       4.000000    72.000000     4.00000   184.000000     5.000000     5.000000           4.00000          4.000000         4.000000    75.000000         3.000000     4.000000     2.000000           2.000000     2.000000      1.000000     1.000000               1.000000     1.000000        1.000000     1.000000       1.000000         1.0000       1.000000       2.000000
+       Status of existing checking account  Duration in month     Credit history           Purpose      Credit amount  Savings account or bonds  Present employment since  Install. rate (%) of disposable income  Personal status and sex  Other debtors or guarantors  Present residence since           Property        Age in years  Other installment plans             Housing  No. of existing credits at this bank               Job  No. people being liable for           Telephone     Foreign worker               Risk
+count                               1000.0             1000.0             1000.0            1000.0             1000.0                    1000.0                    1000.0                                  1000.0                   1000.0                       1000.0                   1000.0             1000.0              1000.0                   1000.0              1000.0                                1000.0            1000.0                       1000.0              1000.0             1000.0             1000.0
+mean                                 2.577             20.903              2.545            32.711              2.105                     3.384                     2.682                                   2.845                    2.358                       35.546                    2.675              1.407               1.155                    1.404               1.037                                 0.234             0.103                        0.907               0.041              0.179              0.713
+std                      1.257637727110893 12.058814452756375 1.0831196370429945 28.25260498942865 1.5800226173923813        1.2083062542269671        0.7080800642422984                      1.1037178956568536       1.0502089977423252           11.375468574317512       0.7056010720462893 0.5776544682461002 0.36208577175319395      0.49094299569810035 0.18885620632287056                   0.42358402168096876 0.304110972316823            0.290577761426155 0.19838941090279583 0.3835441384066586 0.4525879316064844
+min                                    1.0                4.0                0.0               2.0                1.0                       1.0                       1.0                                     1.0                      1.0                         19.0                      1.0                1.0                 1.0                      1.0                 1.0                                   0.0               0.0                          0.0                 0.0                0.0                0.0
+25%                                    1.0               12.0                2.0              14.0                1.0                       3.0                       2.0                                     2.0                      1.0                         27.0                      3.0                1.0                 1.0                      1.0                 1.0                                   0.0               0.0                          1.0                 0.0                0.0                0.0
+50%                                    2.0               18.0                2.0              23.0                1.0                       3.0                       3.0                                     3.0                      2.0                         33.0                      3.0                1.0                 1.0                      1.0                 1.0                                   0.0               0.0                          1.0                 0.0                0.0                1.0
+75%                                    4.0               24.0                4.0              40.0                3.0                       5.0                       3.0                                     4.0                      3.0                         42.0                      3.0                2.0                 1.0                      2.0                 1.0                                   0.0               0.0                          1.0                 0.0                0.0                1.0
+max                                    4.0               72.0                4.0             184.0                5.0                       5.0                       4.0                                     4.0                      4.0                         75.0                      3.0                4.0                 2.0                      2.0                 2.0                                   1.0               1.0                          1.0                 1.0                1.0                1.0
 ---Prediction column values---
 [(0, 287), (1, 713)]

@@ -29,21 +29,21 @@ def save_to_file(filename, data_info, data_desc="", pred_col=None, pred_counts=N
             file.write(desc3)
             file.write(str(pred_counts))
 
-def save_to_file_2(filename, data_info, data_desc="", pred_col=None, pred_counts=None,
-                 desc1="---Data info---\n",
-                 desc2="\n---Data Description---\n",
-                 desc3="\n---Prediction column values---\n"):
+
+def save_to_file_2(filename, data_info, pred_col=None, pred_counts=None,
+                   desc3="\n---Prediction column values---\n"):
     with open(filename, 'w') as file:
         for x in data_info:
             file.write(str(x))
-            #file.write("\n")
+            # file.write("\n")
 
-        #file.write(data_info)
-        #file.write(desc2)
-        #file.write(data_desc)
+        # file.write(data_info)
+        # file.write(desc2)
+        # file.write(data_desc)
         if pred_col is not None:
             file.write(desc3)
             file.write(str(pred_counts))
+
 
 # Statistical analysis of obtained datasets
 # dataframe -    Pandas DataFrame to be used for the analysis
@@ -104,7 +104,6 @@ def data_prep_sep_target(dataframe, filename, pred_col, val_replacer_origin=None
 
 # Alternative method to return only test and train data without separating the target feature
 def data_prep(dataframe):
-
     train, test = train_test_split(dataframe, test_size=0.2, random_state=0)
     train = np.array(train)
     test = np.array(test)
@@ -123,9 +122,9 @@ def model_evaluation(model, title, feature, target, target_values, filename):
     pred = model.predict(feature)
     acc = accuracy_score(target, pred)
     if target_values > 2:
-    #    roc_auc = roc_auc_score(target, model.predict_proba(pred), multi_class="ovr")
-    #else:
-    #    roc_auc = roc_auc_score(target, pred)
+        #    roc_auc = roc_auc_score(target, model.predict_proba(pred), multi_class="ovr")
+        # else:
+        #    roc_auc = roc_auc_score(target, pred)
         f1 = f1_score(target, pred, average="weighted")
         prec = precision_score(target, pred, average="weighted")
         recall = recall_score(target, pred, average="weighted")
@@ -133,11 +132,11 @@ def model_evaluation(model, title, feature, target, target_values, filename):
         f1 = f1_score(target, pred)
         prec = precision_score(target, pred)
         recall = recall_score(target, pred)
-    #prec = precision_score(target, pred)
-    #recall = recall_score(target, pred)
-    #scores[title] = [acc, roc_auc, f1, prec, recall]
+    # prec = precision_score(target, pred)
+    # recall = recall_score(target, pred)
+    # scores[title] = [acc, roc_auc, f1, prec, recall]
     scores[title] = [acc, f1, prec, recall]
-    #scores.index = ['Accuracy', 'ROC_AUC', 'F1_Score', 'Precision_Score', 'Recall_Score']
+    # scores.index = ['Accuracy', 'ROC_AUC', 'F1_Score', 'Precision_Score', 'Recall_Score']
     scores.index = ['Accuracy', 'F1_Score', 'Precision_Score', 'Recall_Score']
 
     save_to_file("results/model_performance/" + filename, scores.to_string(), "")
@@ -153,12 +152,6 @@ def cat_names(data, categorical_features):
         le.fit(data[feature])
         data[feature] = le.transform(data[feature])
         categorical_names[feature] = le.classes_
-        #print("feature ", feature)
-        #print("le ", le.fit(data.loc[:, feature]))
-        #le.fit(data.loc[:, feature])
-        #data.loc[:, feature] = le.transform(data.loc[:, feature])
-        #categorical_names[feature] = le.classes_
 
     print(categorical_names)
     return categorical_names
-
