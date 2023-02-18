@@ -8,7 +8,7 @@ import explainers as exp
 
 
 def analysis_explanation(dataset, model, dataset_cols, dataset_name, model_name, target_name, target_idx,
-                         original_target_values, replacer):
+                         original_target_values, replacer, cat_cols):
     x_train, x_test, y_train, y_test = af.data_prep_sep_target(dataset, dataset_name + ".txt", target_name,
                                                                val_replacer_origin=original_target_values,
                                                                replacer=replacer)
@@ -22,15 +22,19 @@ def analysis_explanation(dataset, model, dataset_cols, dataset_name, model_name,
         multioutput = True
     else:
         multioutput = False
-    exp.shap_explainer(model, x_train, dataset_no_target.columns, dataset_name, multioutput=multioutput)
-    exp.lime_explainer(model, x_train, x_test, dataset.columns, replacer, dataset_name)
-    # exp.anchor_explainer(model, pd.concat([pd.DataFrame(dataset.columns),dataset.loc[:]], axis=1).reset_index(
-    # drop=True).drop(0, axis=1).values, target_idx, dataset.columns, default_credit_index,
-    # default_credit_cat_cols_num, "default_credit")
-    exp.permuteattack_explainer(model, dataset_no_target.columns, x_train, x_test, dataset_name)
-    for x in range(len(x_train[0])):
-        exp.pdp_explainer(model, x_train, [x], dataset.columns, dataset_name, target_idx)
+    # exp.shap_explainer(model, x_train, dataset_no_target.columns, dataset_name, multioutput=multioutput)
+    # exp.lime_explainer(model, x_train, x_test, dataset.columns, replacer, dataset_name)
 
+
+    # for x in range(len(x_train[0])):
+    #    exp.pdp_explainer(model, x_train, [x], dataset.columns, dataset_name, target_idx)
+    dataset.loc[-1] = dataset.columns
+    dataset.index = dataset.index + 1
+    dataset.sort_index(inplace=True)
+    dataset = dataset.astype(str)
+    exp.anchor_explainer(model, dataset.values, target_idx, dataset.columns, default_credit_index,
+                         cat_cols, "default_credit")
+    exp.permuteattack_explainer(model, dataset_no_target.columns, x_train, x_test, dataset_name)
 
 iris_target = ["sepal length (cm)",
                "sepal width (cm)",
@@ -40,12 +44,13 @@ iris_target = ["sepal length (cm)",
 iris_no_target = iris_target[:iris_target.index("class")] + iris_target[iris_target.index("class") + 1:]
 
 # Defining categorical and numerical columns for Credit Card
-default_credit_cat_cols = ["X2", "X3", "X4"]
+#default_credit_cat_cols = ["X2", "X3", "X4"]
 # REMOVE RETIRA DA LISTA ORIGINAL!!!!!
 default_credit_num_cols = ["X1", "X5", "X6", "X7", "X8", "X9", "X10", "X11", "X12", "X13", "X14", "X15", "X16", "X17",
                            "X18", "X19", "X20", "X21", "X22", "X23", "Y"]
 default_credit_num_cols_no_target = default_credit_num_cols.remove("Y")
 default_credit_cat_cols_num = [2, 3, 4]
+default_credit_cat_cols = ["Gender", "Education", "Marital status"]
 default_credit_num_cols_num = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
 default_credit_index = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
 
@@ -135,7 +140,7 @@ xgb_final = xgboost.XGBClassifier(tree_method='hist',
 random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
 
 analysis_explanation(default_credit, xgb_final, default_credit.columns, "default_credit", "xgboost", "Y", 23, None,
-                     replacer=[0, 1])
+                     [0, 1], default_credit_cat_cols)
 # FIM TESTE DATASET 1
 
 # INICIO TESTE DATASET IRIS
@@ -150,7 +155,7 @@ xgb_final = xgboost.XGBClassifier(tree_method='hist',
 
 random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
 analysis_explanation(iris, xgb_final, iris.columns, "iris", "xgboost", "class", 4,
-                     original_target_values=['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], replacer=[0, 1, 2])
+                     ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], [0, 1, 2], [])
 # FIM TESTE DATASET 1
 
 # German Credit - Data preparation and split into train/test
@@ -165,7 +170,7 @@ xgb_final = xgboost.XGBClassifier(tree_method='hist',
 
 random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
 analysis_explanation(german_credit_num, xgb_final, german_credit_num.columns, "german_credit", "xgboost", "Risk", 21,
-                     original_target_values=["1", "2"], replacer=[0, 1])
+                     ["1", "2"], [0, 1], [])
 
 # HELOC - Data preparation and split into train/test
 xgb_final = xgboost.XGBClassifier(tree_method='hist',
