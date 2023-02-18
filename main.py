@@ -16,18 +16,18 @@ def analysis_explanation(dataset, model, dataset_cols, dataset_name, model_name,
     af.model_evaluation(model, "Train", x_train, y_train, len(replacer), dataset_name + "_" + model_name + "_train.txt")
     af.model_evaluation(model, "Test", x_test, y_test, len(replacer), dataset_name + "_" + model_name + "_test.txt")
     # dataset_no_target = dataset[:dataset.index(target_name)] + dataset[dataset.index(target_name)+1:]
-    print(dataset.columns)
+    #print(dataset.columns)
     dataset_no_target = dataset.drop(str(target_name), axis=1)
     if len(replacer) > 2:
         multioutput = True
     else:
         multioutput = False
-    # exp.shap_explainer(model, x_train, dataset_no_target.columns, dataset_name, multioutput=multioutput)
-    # exp.lime_explainer(model, x_train, x_test, dataset.columns, replacer, dataset_name)
+    exp.shap_explainer(model, x_train, dataset_no_target.columns, dataset_name, multioutput=multioutput)
+    exp.lime_explainer(model, x_train, x_test, dataset.columns, replacer, dataset_name)
 
+    for x in range(len(x_train[0])):
+       exp.pdp_explainer(model, x_train, [x], dataset.columns, dataset_name, target_idx)
 
-    # for x in range(len(x_train[0])):
-    #    exp.pdp_explainer(model, x_train, [x], dataset.columns, dataset_name, target_idx)
     dataset.loc[-1] = dataset.columns
     dataset.index = dataset.index + 1
     dataset.sort_index(inplace=True)
@@ -155,7 +155,8 @@ xgb_final = xgboost.XGBClassifier(tree_method='hist',
 
 random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
 analysis_explanation(iris, xgb_final, iris.columns, "iris", "xgboost", "class", 4,
-                     ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], [0, 1, 2], [])
+                     ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], [0, 1, 2], None)
+                     #None, [0, 1, 2], None)
 # FIM TESTE DATASET 1
 
 # German Credit - Data preparation and split into train/test
@@ -170,7 +171,7 @@ xgb_final = xgboost.XGBClassifier(tree_method='hist',
 
 random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
 analysis_explanation(german_credit_num, xgb_final, german_credit_num.columns, "german_credit", "xgboost", "Risk", 21,
-                     ["1", "2"], [0, 1], [])
+                     ["1", "2"], [0, 1], None)
 
 # HELOC - Data preparation and split into train/test
 xgb_final = xgboost.XGBClassifier(tree_method='hist',
@@ -184,4 +185,4 @@ xgb_final = xgboost.XGBClassifier(tree_method='hist',
 
 random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
 analysis_explanation(heloc, xgb_final, heloc.columns, "heloc", "xgboost", "RiskPerformance", 21,
-                     original_target_values=["Bad", "Good"], replacer=[0, 1])
+                     ["Bad", "Good"], [0, 1], None)
