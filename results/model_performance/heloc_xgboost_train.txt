@@ -1,7 +1,7 @@
 ---Data info---
-                    Train
-Accuracy         0.817856
-F1_Score         0.803101
-Precision_Score  0.831683
-Recall_Score     0.776418
+                             Train
+Accuracy        0.8178558623162424
+F1_Score        0.8031007751937985
+Precision_Score 0.8316831683168316
+Recall_Score    0.7764176867349488
 ---Data Description---
