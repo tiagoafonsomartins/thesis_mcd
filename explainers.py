@@ -8,6 +8,8 @@ from sklearn.inspection import partial_dependence, PartialDependenceDisplay  # ,
 import auxiliary_functions as af
 from models.PermuteAttack.src import ga_attack as permute
 from models.anchor.anchor import utils as anchor_utils, anchor_tabular as anchor_tabular
+import models.DiCE.dice_ml
+from models.DiCE.dice_ml.utils import helpers
 
 
 # PermuteAttack initializer
@@ -72,13 +74,18 @@ def pdp_explainer(model, x_axis, features, feature_names, dataset_name, target=N
     deciles = {0: np.linspace(0, 1, num=5)}
 
     if target != None:
-        for target_class in model.classes_:
-            print(target_class)
+        if model.classes_ > 2:
+            for target_class in model.classes_:
+                print(target_class)
+                pdp_results = partial_dependence(model, x_axis, features)
+                pdp = PartialDependenceDisplay.from_estimator(model, x_axis, features=features, feature_names=feature_names,
+                                                              target=target_class)
+                plt.pyplot.savefig("results/explanations/" + dataset_name + "/" + str(features[0]) + "_target-" + str(
+                    target_class) + "_" + "_pdp_explanation.png")
+        else:
             pdp_results = partial_dependence(model, x_axis, features)
-            pdp = PartialDependenceDisplay.from_estimator(model, x_axis, features=features, feature_names=feature_names,
-                                                          target=target_class)
-            plt.pyplot.savefig("results/explanations/" + dataset_name + "/" + str(features[0]) + "_target-" + str(
-                target_class) + "_" + "_pdp_explanation.png")
+            pdp = PartialDependenceDisplay.from_estimator(model, x_axis, features=features, feature_names=feature_names)
+            plt.pyplot.savefig("results/explanations/" + dataset_name + "/" + str(features[0]) + "_" + "_pdp_explanation.png")
     else:
         pdp_results = partial_dependence(model, x_axis, features)
         pdp = PartialDependenceDisplay.from_estimator(model, x_axis, features=features, feature_names=feature_names)
@@ -194,3 +201,40 @@ def shap_explainer(model, x, feature_names, dataset_name, multioutput=False):
         shap.plots.bar(shap_values[0], show=False)
         plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_barplot.png", bbox_inches="tight")
         plt.pyplot.clf()
+
+
+def clear_explainer():
+    print("test")
+
+def dice_explainer(train_dataset, model, continuous_features, target_name, classes, dataset_name):
+    # Dataset for training an ML model
+    d = models.DiCE.dice_ml.Data(dataframe=train_dataset,
+                     continuous_features=continuous_features,
+                     outcome_name=target_name)
+
+    # Pre-trained ML model
+    m = models.DiCE.dice_ml.Model(model=model, backend='sklearn')
+    # DiCE explanation instance
+    exp = models.DiCE.dice_ml.Dice(d, m)
+    if len(classes) > 2:
+        for target in classes:
+            e1 = exp.generate_counterfactuals(train_dataset[0:1].drop([target_name], axis=1), total_CFs=7, desired_class=target)
+            e1.visualize_as_dataframe()
+
+    else:
+        e1 = exp.generate_counterfactuals(train_dataset[2:3].drop([target_name], axis=1), total_CFs=3, desired_class="opposite",  features_to_vary=continuous_features)
+        e1.cf_examples_list[0].test_instance_df
+        e1.visualize_as_dataframe()
+    final_data = []
+    final_data.append("Original Instance\n")
+    final_data.append(train_dataset.columns)
+    final_data.append("\n")
+
+    final_data.append(e1.cf_examples_list[0].test_instance_df.values)
+    final_data.append("\nCounterfactuals Generated\n")
+    final_data.append(e1.cf_examples_list[0].final_cfs_df.values)
+    af.save_to_file_2("results/explanations/" + dataset_name + "/dice_counterfactuals.txt", final_data)
+    final_data = pd.DataFrame(e1.cf_examples_list[0].final_cfs_df)
+    final_data = final_data.append(e1.cf_examples_list[0].test_instance_df)
+    final_data.to_csv(path_or_buf='results/explanations/'+dataset_name+'/dice_counterfactuals.csv', index=False)
+    #e1.cf_examples_list[0].final_cfs_df.to_csv(path_or_buf='results/explanations/'+dataset_name+'/dice_counterfactuals.csv', index=False)

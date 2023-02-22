@@ -304,11 +304,11 @@ def load_csv_dataset(data, target_idx, delimiter=',',
     ret.validation_idx = cv_idx
     ret.train_idx = train_idx
 
-    # ret.train, ret.test, ret.labels_train, ret.labels_test = (
-    #     sklearn.cross_validation.train_test_split(data, ret.labels,
-    #                                               train_size=0.80))
-    # ret.validation, ret.test, ret.labels_validation, ret.labels_test = (
-    #     sklearn.cross_validation.train_test_split(ret.test, ret.labels_test,
-    #                                               train_size=.5))
+    ret.train, ret.test, ret.labels_train, ret.labels_test = (
+        sklearn.model_selection.train_test_split(data, ret.labels,
+                                                  train_size=0.80))
+    ret.validation, ret.test, ret.labels_validation, ret.labels_test = (
+        sklearn.model_selection.train_test_split(ret.test, ret.labels_test,
+                                                  train_size=.5))
     ret.data = data
     return ret

@@ -1,0 +1,15 @@
+Original Instance
+Index(['Status of existing checking account', 'Duration in month',
+       'Credit history', 'Purpose', 'Credit amount',
+       'Savings account or bonds', 'Present employment since',
+       'Install. rate (%) of disposable income', 'Personal status and sex',
+       'Other debtors or guarantors', 'Present residence since', 'Property',
+       'Age in years', 'Other installment plans', 'Housing',
+       'No. of existing credits at this bank', 'Job',
+       'No. people being liable for', 'Telephone', 'Foreign worker', 'Risk'],
+      dtype='object')
+[['4' 12 '4' '21' 1 '4' '3' 3 '1' '49' 3 '1' 2 '1' '1' 0 '0' 1 '0' '0' 1]]
+Counterfactuals Generated
+[[ 4 17  4 21  1  4  3  4  1 49  3  1  2  1  1  0  0  1  0  0  0]
+ [ 4 17  4 21  1  4  3  4  1 49  3  1  2  1  1  0  0  0  0  0  0]
+ [ 4 16  4 21  1  4  3  4  1 49  3  1  1  1  1  0  0  1  0  0  0]]
