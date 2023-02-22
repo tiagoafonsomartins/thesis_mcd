@@ -1,9 +1,0 @@
-Anchor: Past, monthly payment (-2) = -1 AND Past, monthly payment (-5) = -1 AND Past, monthly payment (-6) = -1
-Precision: 0.98
-Coverage: 0.10
-Anchor test precision: 0.98
-Anchor test coverage: 0.10
-Partial anchor: Past, monthly payment (-2) = -1 AND Past, monthly payment (-5) = -1
-Partial precision: 0.95
-Partial coverage: 0.12
-Partial anchor test precision: 0.98

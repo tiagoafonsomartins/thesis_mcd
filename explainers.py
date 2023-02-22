@@ -74,7 +74,7 @@ def pdp_explainer(model, x_axis, features, feature_names, dataset_name, target=N
     deciles = {0: np.linspace(0, 1, num=5)}
 
     if target != None:
-        if model.classes_ > 2:
+        if len(model.classes_) > 2:
             for target_class in model.classes_:
                 print(target_class)
                 pdp_results = partial_dependence(model, x_axis, features)
