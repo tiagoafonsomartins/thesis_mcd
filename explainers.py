@@ -17,11 +17,12 @@ from models.DiCE.dice_ml.utils import helpers
 # feature_names - array of strings, indicating the name of the columns of the dataset
 # x_train/x_test - train/test dataset as numpy array
 # idx - integer referring to the preferred instance for generation of explanation
-def anchor_explainer(model, dataset, class_name, feature_names, features_to_use, categorical_features, dataset_name):
-    dataset_anchors = anchor_utils.load_csv_dataset(dataset, features_to_use=features_to_use,
+def anchor_explainer(model, dataset, target_name, class_idx, feature_names, features_to_use, categorical_features, dataset_name):
+    dataset_anchors = anchor_utils.load_csv_dataset(dataset.values, features_to_use=features_to_use,
                                                     feature_names=feature_names, categorical_features=None,
-                                                    target_idx=class_name, skip_first=True)
-
+                                                    target_idx=class_idx, skip_first=True, discretize=True)
+    dir = '/datasets/'
+    #dataset_anchors = anchor_utils.load_dataset('adult', balance=True, dataset_folder=dir, discretize=True)
     explainer = anchor_tabular.AnchorTabularExplainer(
         dataset_anchors.class_names,
         dataset_anchors.feature_names,
@@ -29,7 +30,7 @@ def anchor_explainer(model, dataset, class_name, feature_names, features_to_use,
         dataset_anchors.categorical_names)
     idx = 0
     np.random.seed(1)
-    exp = explainer.explain_instance(np.array(dataset_anchors.test)[idx, :], model.predict, threshold=0.95)
+    exp = explainer.explain_instance(np.array(dataset.drop(columns=target_name))[idx, :], model.predict, threshold=0.95)
     fit_anchor = np.where(
         np.all(np.array(dataset_anchors.test)[:, exp.features()] == np.array(dataset_anchors.test)[idx][exp.features()],
                axis=1))[0]
@@ -114,6 +115,7 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
     print("permute_attack.results ", permute_attack.results)
     # af.save_to_file_2("results/explanations/" + dataset_name + "/results_permuteattack_explanation.txt",
     # pd.DataFrame(permute_attack.results).values)
+    #permute_temp saves data for a single prediction
     permute_tmp = []
     permute_tmp.append("x_all \n")
     permute_tmp.append(pd.DataFrame(x_all).values)
@@ -129,6 +131,76 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
     # "/changes_permuteattack_explanation.txt", pd.DataFrame(x_changes).values) af.save_to_file_2(
     # "results/explanations/" + dataset_name + "/success_permuteattack_explanation.txt", pd.DataFrame(x_sucess).values)
     af.save_to_file_2("results/explanations/" + dataset_name + "/success_permuteattack_explanation.txt", permute_tmp)
+
+    #visualization of data regarding the entire dataset
+    results = []
+
+    for xi in x_test:
+        x_all, x_changes, x_sucess = permute_attack.attack(model, x=xi,x_train=x_train)
+        if len(x_sucess)>0:
+            results.append((xi,x_changes, x_sucess))
+
+    adv = []
+    data = []
+    for result in results:
+        for xi in result[2]:
+            adv.append(xi)
+            data.append(result[0])
+
+    predprob_data = model.predict_proba(data)[:,1]
+    predprob_adv = model.predict_proba(adv)[:,1]
+    pred = model.predict(data)
+
+    fig = plt.figure(figsize=(10,5))
+    _ = plt.hist(predprob_data[pred==1], label="Original Prediction")
+    _ = plt.hist(predprob_adv[pred==1], label="Counterfactual Prediction")
+    plt.legend(loc='best', fontsize=13)
+    fig.gca().set_xlabel("Prediction Probability", fontsize=13)
+    fig.gca().set_ylabel("Counts", fontsize=13)
+
+    fig = plt.figure(figsize=(10,5))
+    _ = plt.hist(predprob_data[pred==0], label="Original Prediction")
+    _ = plt.hist(predprob_adv[pred==0], label="Counterfactual Prediction")
+    plt.legend(loc='best', fontsize=13)
+    fig.gca().set_xlabel("Prediction Probability", fontsize=13)
+    fig.gca().set_ylabel("Counts", fontsize=13)
+
+    fig = plt.figure(figsize=(7,7))
+
+
+    plt.scatter(predprob_data[pred==1], predprob_adv[pred==1], c="b", vmin=0, vmax=1, label = "Original Pred = 1, Counterfactual Pred = 0")
+    plt.scatter(predprob_data[pred==0], predprob_adv[pred==0], c="r", vmin=0, vmax=1, label = "Original Pred = 0, Counterfactual Pred = 1")
+
+    plt.hlines(0.5, 0, 1, linestyles="--")
+    plt.vlines(0.5, 0, 1, linestyles="--")
+
+    plt.legend(loc='best', fontsize=13)
+    fig.gca().set_xlabel("Original Probability", fontsize=15)
+    fig.gca().set_ylabel("Counterfactual Probability", fontsize=15)
+    plt.tight_layout()
+    plt.savefig("scatter_outcomes.png", type="png", dpi=600)
+
+    x_change_all = results[0][1]
+    for result in results[1:]:
+        x_change_all = pd.concat([x_change_all, result[1]])
+
+    x_change_all.head()
+    plt.figure(figsize=(10,6))
+    ax= plt.subplot(1,2,1)
+
+    ind = model.predict(adv)==0
+    df1 = (x_change_all[ind]).sum(0).to_frame().sort_values(by=0,ascending=False)
+    ax = df1[df1[0]!=0].plot.bar(legend=False, fontsize=13, ax = ax)
+    ax.set_ylabel("Counts", fontsize=14)
+    ax.set_title("Pred. changed from Default to Not Default")
+    ax = plt.subplot(1,2,2)
+    ind = model.predict(adv)==1
+    df2 = (x_change_all[ind]).sum(0).to_frame().sort_values(by=0,ascending=False)
+    df2[df2[0]!=0].plot.bar(legend=False, fontsize=13, ax=ax)
+    ax.set_title("Pred. changed from Not Default to Default")
+
+    plt.tight_layout()
+
 
 
 '''

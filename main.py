@@ -8,7 +8,7 @@ import explainers as exp
 
 
 def analysis_explanation(dataset, model, dataset_cols_index, dataset_name, model_name, target_name, target_idx,
-                         original_target_values, replacer, cat_cols, cont_cols):
+                         original_target_values, replacer, cat_cols, cat_cols_index, cont_cols):
     x_train, x_test, y_train, y_test = af.data_prep_sep_target(dataset, dataset_name + ".txt", target_name,
                                                                val_replacer_origin=original_target_values,
                                                                replacer=replacer)
@@ -16,11 +16,12 @@ def analysis_explanation(dataset, model, dataset_cols_index, dataset_name, model
     if model_name != "xgboost":
         model.fit(x_train, y_train)
 
-        exp.anchor_explainer(model, dataset.values, target_idx, dataset.columns, dataset_cols_index,
+        exp.anchor_explainer(model, dataset, target_idx, dataset.columns, dataset_cols_index,
                              cat_cols, dataset_name)
     else:
         model.fit(x_train, y_train)
-
+    #exp.anchor_explainer(model, dataset, target_name, target_idx, dataset.columns, dataset_cols_index,
+    #                     cat_cols_index, dataset_name)
     af.model_evaluation(model, "Train", x_train, y_train, len(replacer), dataset_name + "_" + model_name + "_train.txt")
     af.model_evaluation(model, "Test", x_test, y_test, len(replacer), dataset_name + "_" + model_name + "_test.txt")
     # dataset_no_target = dataset[:dataset.index(target_name)] + dataset[dataset.index(target_name)+1:]
@@ -61,11 +62,12 @@ iris_no_target = iris_target[:iris_target.index("class")] + iris_target[iris_tar
 default_credit_num_cols = ["X1", "X5", "X6", "X7", "X8", "X9", "X10", "X11", "X12", "X13", "X14", "X15", "X16", "X17",
                            "X18", "X19", "X20", "X21", "X22", "X23", "Y"]
 default_credit_num_cols_no_target = default_credit_num_cols.remove("Y")
-default_credit_cat_cols_num = [2, 3, 4]
+default_credit_cat_cols_index = [1, 2, 3]
 default_credit_cat_cols = ["Gender", "Education", "Marital status"]
 default_credit_num_cols_num = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
-default_credit_index = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+default_credit_index = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
 german_credit_index = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+german_credit_cat_cols_index = [ 2, 3, 5, 6, 8, 9]#, 11, 13, 14, 16, 18, 19]
 iris_index = [0, 1, 2, 3]
 heloc_index = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 default_credit_columns = ["Given credit (NT$)",
@@ -179,7 +181,7 @@ xgb_final = xgboost.XGBClassifier(tree_method='hist',
 random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
 
 analysis_explanation(default_credit, xgb_final, default_credit_index, "default_credit", "xgboost", "Y", 23, None,
-                     [0, 1], default_credit_cat_cols, default_credit_cont_cols)
+                     [0, 1], default_credit_cat_cols, default_credit_cat_cols_index, default_credit_cont_cols)
 # analysis_explanation(default_credit, random_forest_classifier, default_credit_index, "default_credit", "random_forest", "Y", 23, None,
 #                     [0, 1], default_credit_cat_cols)
 # FIM TESTE DATASET 1
@@ -196,7 +198,7 @@ xgb_final = xgboost.XGBClassifier(tree_method='hist',
 
 random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
 analysis_explanation(iris, xgb_final, iris_index, "iris", "xgboost", "class", 4,
-                     ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], [0, 1, 2], None, iris_no_target)
+                     ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], [0, 1, 2], None, None, iris_no_target)
 # analysis_explanation(iris, random_forest_classifier, iris_index, "iris", "xgboost", "class", 4,
 #                     ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], [0, 1, 2], None)
 # None, [0, 1, 2], None)
@@ -214,7 +216,7 @@ xgb_final = xgboost.XGBClassifier(tree_method='hist',
 
 random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
 analysis_explanation(german_credit_num, xgb_final, german_credit_index, "german_credit", "xgboost", "Risk", 20,
-                     ['1', '2'], [0, 1], german_cat_cols, german_cont_cols)
+                     ['1', '2'], [0, 1], german_cat_cols, german_credit_cat_cols_index, german_cont_cols)
 # analysis_explanation(german_credit_num, random_forest_classifier, german_credit_index, "german_credit", "xgboost", "Risk", 20,
 #                     ['1', '2'], [0, 1], None)
 
