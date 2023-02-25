@@ -115,7 +115,8 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
     print("permute_attack.results ", permute_attack.results)
     # af.save_to_file_2("results/explanations/" + dataset_name + "/results_permuteattack_explanation.txt",
     # pd.DataFrame(permute_attack.results).values)
-    #permute_temp saves data for a single prediction
+
+    #permute_temp saves data for a single prediction, with the counterfactual predictions
     permute_tmp = []
     permute_tmp.append("x_all \n")
     permute_tmp.append(pd.DataFrame(x_all).values)
@@ -126,17 +127,22 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
     permute_tmp.append("\n results \n")
     pd.set_option('display.float_format', str)
     permute_tmp.append(pd.DataFrame(permute_attack.results.data).round(3).values)
-    # af.save_to_file_2("results/explanations/" + dataset_name + "/all_permuteattack_explanation.txt", pd.DataFrame(
-    # x_all).values) af.save_to_file_2("results/explanations/" + dataset_name +
-    # "/changes_permuteattack_explanation.txt", pd.DataFrame(x_changes).values) af.save_to_file_2(
-    # "results/explanations/" + dataset_name + "/success_permuteattack_explanation.txt", pd.DataFrame(x_sucess).values)
+    permute_tmp.append("\n original instance \n")
+    permute_tmp.append(pd.DataFrame(x_test[idx, :]).values)
+
     af.save_to_file_2("results/explanations/" + dataset_name + "/success_permuteattack_explanation.txt", permute_tmp)
 
     #visualization of data regarding the entire dataset
     results = []
 
-    for xi in x_test:
+    i = 0
+    print("X_TEST", len(x_test))
+    plt.pyplot.style.use('ggplot')
+
+    for xi in x_test[0:295]:
         x_all, x_changes, x_sucess = permute_attack.attack(model, x=xi,x_train=x_train)
+        print("X_TEST ITERATION", i)
+        i+=1
         if len(x_sucess)>0:
             results.append((xi,x_changes, x_sucess))
 
@@ -147,60 +153,75 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
             adv.append(xi)
             data.append(result[0])
 
+    plt.pyplot.style.use('ggplot')
+
     predprob_data = model.predict_proba(data)[:,1]
     predprob_adv = model.predict_proba(adv)[:,1]
     pred = model.predict(data)
 
-    fig = plt.figure(figsize=(10,5))
-    _ = plt.hist(predprob_data[pred==1], label="Original Prediction")
-    _ = plt.hist(predprob_adv[pred==1], label="Counterfactual Prediction")
-    plt.legend(loc='best', fontsize=13)
-    fig.gca().set_xlabel("Prediction Probability", fontsize=13)
-    fig.gca().set_ylabel("Counts", fontsize=13)
+    # Histogram for original vs counterfactual predictions, for prediction class 1
+    plt.pyplot.clf()
+    plt.pyplot.hist(predprob_data[pred==1], label="Original Prediction")
+    plt.pyplot.hist(predprob_adv[pred==1], label="Counterfactual Prediction")
+    plt.pyplot.legend(loc='best', fontsize=13)
+    plt.pyplot.gca().set_xlabel("Prediction Probability", fontsize=13)
+    plt.pyplot.gca().set_ylabel("Counts", fontsize=13)
+    plt.pyplot.savefig("results/explanations/" + dataset_name + "/permuteattack_explanation_histogram.png")
 
-    fig = plt.figure(figsize=(10,5))
-    _ = plt.hist(predprob_data[pred==0], label="Original Prediction")
-    _ = plt.hist(predprob_adv[pred==0], label="Counterfactual Prediction")
-    plt.legend(loc='best', fontsize=13)
-    fig.gca().set_xlabel("Prediction Probability", fontsize=13)
-    fig.gca().set_ylabel("Counts", fontsize=13)
+    plt.pyplot.clf()
 
-    fig = plt.figure(figsize=(7,7))
+    # Histogram for original vs counterfactual predictions, for prediction class 0
+    plt.pyplot.hist(predprob_data[pred==0], label="Original Prediction")
+    plt.pyplot.hist(predprob_adv[pred==0], label="Counterfactual Prediction")
+    plt.pyplot.legend(loc='best', fontsize=13)
+    plt.pyplot.gca().set_xlabel("Prediction Probability", fontsize=13)
+    plt.pyplot.gca().set_ylabel("Counts", fontsize=13)
+
+    #fig = plt.pyplot.figure(figsize=(7,7))
+    plt.pyplot.savefig("results/explanations/" + dataset_name + "/permuteattack_explanation_histogram_2.png")
+    plt.pyplot.clf()
+
+    # Distributions of original/counterfactual predictions
+
+    plt.pyplot.scatter(predprob_data[pred==1], predprob_adv[pred==1], c="b", vmin=0, vmax=1, label = "Original Pred = 1, Counterfactual Pred = 0")
+    plt.pyplot.scatter(predprob_data[pred==0], predprob_adv[pred==0], c="r", vmin=0, vmax=1, label = "Original Pred = 0, Counterfactual Pred = 1")
+
+    plt.pyplot.hlines(0.5, 0, 1, linestyles="--")
+    plt.pyplot.vlines(0.5, 0, 1, linestyles="--")
+
+    plt.pyplot.legend(loc='best', fontsize=13)
+    plt.pyplot.gca().set_xlabel("Original Probability", fontsize=15)
+    plt.pyplot.gca().set_ylabel("Counterfactual Probability", fontsize=15)
+    plt.pyplot.tight_layout()
+    plt.pyplot.savefig("results/explanations/" + dataset_name + "/permuteattack_explanation_scatter.png", type="png", dpi=600)
+    #plt.pyplot.savefig("results/explanations/" + dataset_name + "/permuteattack_explanation_scatter.png", type="png", dpi=600)
+    plt.pyplot.clf()
 
 
-    plt.scatter(predprob_data[pred==1], predprob_adv[pred==1], c="b", vmin=0, vmax=1, label = "Original Pred = 1, Counterfactual Pred = 0")
-    plt.scatter(predprob_data[pred==0], predprob_adv[pred==0], c="r", vmin=0, vmax=1, label = "Original Pred = 0, Counterfactual Pred = 1")
-
-    plt.hlines(0.5, 0, 1, linestyles="--")
-    plt.vlines(0.5, 0, 1, linestyles="--")
-
-    plt.legend(loc='best', fontsize=13)
-    fig.gca().set_xlabel("Original Probability", fontsize=15)
-    fig.gca().set_ylabel("Counterfactual Probability", fontsize=15)
-    plt.tight_layout()
-    plt.savefig("scatter_outcomes.png", type="png", dpi=600)
-
+    # Number of features changed in order to get desired output (opposite class)
     x_change_all = results[0][1]
     for result in results[1:]:
         x_change_all = pd.concat([x_change_all, result[1]])
 
     x_change_all.head()
-    plt.figure(figsize=(10,6))
-    ax= plt.subplot(1,2,1)
+
+    plt.pyplot.figure(figsize=(10,6))
+    ax= plt.pyplot.subplot(1,2,1)
 
     ind = model.predict(adv)==0
     df1 = (x_change_all[ind]).sum(0).to_frame().sort_values(by=0,ascending=False)
     ax = df1[df1[0]!=0].plot.bar(legend=False, fontsize=13, ax = ax)
     ax.set_ylabel("Counts", fontsize=14)
     ax.set_title("Pred. changed from Default to Not Default")
-    ax = plt.subplot(1,2,2)
+    ax = plt.pyplot.subplot(1,2,2)
     ind = model.predict(adv)==1
     df2 = (x_change_all[ind]).sum(0).to_frame().sort_values(by=0,ascending=False)
     df2[df2[0]!=0].plot.bar(legend=False, fontsize=13, ax=ax)
     ax.set_title("Pred. changed from Not Default to Default")
-
-    plt.tight_layout()
-
+#
+    plt.pyplot.tight_layout()
+#
+    plt.pyplot.savefig("results/explanations/" + dataset_name + "/permuteattack_explanation_final_graph.png")
 
 
 '''
@@ -210,7 +231,7 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
  cols - 
  target_values
  dataset_name - string representing the name of the dataset when saving the results
- '''
+'''
 
 
 # LIME explanation framework, takes four parameters as np.array and the black-box model
@@ -288,25 +309,31 @@ def dice_explainer(train_dataset, model, continuous_features, target_name, class
     m = models.DiCE.dice_ml.Model(model=model, backend='sklearn')
     # DiCE explanation instance
     exp = models.DiCE.dice_ml.Dice(d, m)
-    if len(classes) > 2:
-        for target in classes:
-            e1 = exp.generate_counterfactuals(train_dataset[0:1].drop([target_name], axis=1), total_CFs=7, desired_class=target)
+    try:
+        if len(classes) > 2:
+            for target in classes:
+                e1 = exp.generate_counterfactuals(train_dataset[0:1].drop([target_name], axis=1), total_CFs=7, desired_class=target)
+                e1.visualize_as_dataframe()
+
+        else:
+            e1 = exp.generate_counterfactuals(train_dataset[2:3].drop([target_name], axis=1), total_CFs=3, desired_class="opposite",  features_to_vary=continuous_features)
+            e1.cf_examples_list[0].test_instance_df
             e1.visualize_as_dataframe()
 
-    else:
-        e1 = exp.generate_counterfactuals(train_dataset[2:3].drop([target_name], axis=1), total_CFs=3, desired_class="opposite",  features_to_vary=continuous_features)
-        e1.cf_examples_list[0].test_instance_df
-        e1.visualize_as_dataframe()
-    final_data = []
-    final_data.append("Original Instance\n")
-    final_data.append(train_dataset.columns)
-    final_data.append("\n")
 
-    final_data.append(e1.cf_examples_list[0].test_instance_df.values)
-    final_data.append("\nCounterfactuals Generated\n")
-    final_data.append(e1.cf_examples_list[0].final_cfs_df.values)
-    af.save_to_file_2("results/explanations/" + dataset_name + "/dice_counterfactuals.txt", final_data)
-    final_data = pd.DataFrame(e1.cf_examples_list[0].final_cfs_df)
-    final_data = final_data.append(e1.cf_examples_list[0].test_instance_df)
-    final_data.to_csv(path_or_buf='results/explanations/'+dataset_name+'/dice_counterfactuals.csv', index=False)
+        final_data = []
+        final_data.append("Original Instance\n")
+        final_data.append(train_dataset.columns)
+        final_data.append("\n")
+
+        final_data.append(e1.cf_examples_list[0].test_instance_df.values)
+        final_data.append("\nCounterfactuals Generated\n")
+        final_data.append(e1.cf_examples_list[0].final_cfs_df.values)
+        af.save_to_file_2("results/explanations/" + dataset_name + "/dice_counterfactuals.txt", final_data)
+        final_data = pd.DataFrame(e1.cf_examples_list[0].final_cfs_df)
+        final_data = final_data.append(e1.cf_examples_list[0].test_instance_df)
+        final_data.to_csv(path_or_buf='results/explanations/'+dataset_name+'/dice_counterfactuals.csv', index=False)
+    except:
+        print("No counterfactual explanations for given instance")
+
     #e1.cf_examples_list[0].final_cfs_df.to_csv(path_or_buf='results/explanations/'+dataset_name+'/dice_counterfactuals.csv', index=False)

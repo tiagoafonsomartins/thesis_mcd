@@ -20,12 +20,11 @@ def analysis_explanation(dataset, model, dataset_cols_index, dataset_name, model
                              cat_cols, dataset_name)
     else:
         model.fit(x_train, y_train)
-    #exp.anchor_explainer(model, dataset, target_name, target_idx, dataset.columns, dataset_cols_index,
-    #                     cat_cols_index, dataset_name)
+    exp.anchor_explainer(model, dataset, target_name, target_idx, dataset.columns, dataset_cols_index,
+                         cat_cols_index, dataset_name)
     af.model_evaluation(model, "Train", x_train, y_train, len(replacer), dataset_name + "_" + model_name + "_train.txt")
     af.model_evaluation(model, "Test", x_test, y_test, len(replacer), dataset_name + "_" + model_name + "_test.txt")
-    # dataset_no_target = dataset[:dataset.index(target_name)] + dataset[dataset.index(target_name)+1:]
-    print(dataset.columns)
+     #dataset_no_target = dataset[:dataset.index(target_name)] + dataset[dataset.index(target_name)+1:]
     dataset_no_target = dataset.drop(str(target_name), axis=1)
     if len(replacer) > 2:
        multioutput = True
@@ -36,7 +35,6 @@ def analysis_explanation(dataset, model, dataset_cols_index, dataset_name, model
     exp.lime_explainer(model, x_train, x_test, dataset.columns, replacer, dataset_name)
     for x in range(len(x_train[0])):
         exp.pdp_explainer(model, x_train, [x], dataset.columns, dataset_name, target_idx)
-
     dataset.loc[-1] = dataset.columns
     dataset.index = dataset.index + 1
     dataset.sort_index(inplace=True)
@@ -45,7 +43,6 @@ def analysis_explanation(dataset, model, dataset_cols_index, dataset_name, model
     else:
         dataset[target_name] = dataset[target_name]
     dataset = dataset.astype(str)
-
     exp.permuteattack_explainer(model, dataset_no_target.columns, x_train, x_test, dataset_name)
 
 
