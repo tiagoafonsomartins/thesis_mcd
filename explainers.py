@@ -73,6 +73,7 @@ def anchor_explainer(model, dataset, target_name, class_idx, feature_names, feat
 def pdp_explainer(model, x_axis, features, feature_names, dataset_name, target=None):
     print("features \n", features, "\n", "feat names \n", feature_names, "\n")
     deciles = {0: np.linspace(0, 1, num=5)}
+    plt.pyplot.clf()
 
     if target != None:
         if len(model.classes_) > 2:
@@ -115,6 +116,7 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
     print("permute_attack.results ", permute_attack.results)
     # af.save_to_file_2("results/explanations/" + dataset_name + "/results_permuteattack_explanation.txt",
     # pd.DataFrame(permute_attack.results).values)
+    plt.pyplot.clf()
 
     #permute_temp saves data for a single prediction, with the counterfactual predictions
     permute_tmp = []
@@ -124,9 +126,9 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
     permute_tmp.append(pd.DataFrame(x_changes).values)
     permute_tmp.append("\n x_success \n")
     permute_tmp.append(pd.DataFrame(x_sucess).values)
-    permute_tmp.append("\n results \n")
-    pd.set_option('display.float_format', str)
-    permute_tmp.append(pd.DataFrame(permute_attack.results.data).round(3).values)
+    #permute_tmp.append("\n results \n")
+    #pd.set_option('display.float_format', str)
+    #permute_tmp.append(pd.DataFrame(permute_attack.results.data).round(3).values)
     permute_tmp.append("\n original instance \n")
     permute_tmp.append(pd.DataFrame(x_test[idx, :]).values)
 
@@ -252,8 +254,9 @@ def shap_explainer(model, x, feature_names, dataset_name, multioutput=False):
     shap.initjs()
     data = pd.DataFrame(x, columns=feature_names)
     # explainer = shap.KernelExplainer(model.predict_proba, data)
+    plt.pyplot.clf()
 
-    # shap_values = explainer_tree.shap_values(data)
+# shap_values = explainer_tree.shap_values(data)
     if multioutput:
         explainer = shap.KernelExplainer(model.predict_proba, data)
         shap_values = explainer.shap_values(data)

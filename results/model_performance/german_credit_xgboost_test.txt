@@ -1,7 +1,7 @@
 ---Data info---
-                              Test
-Accuracy                     0.965
-F1_Score        0.9752650176678446
-Precision_Score  0.971830985915493
-Recall_Score    0.9787234042553191
+                     Test
+Accuracy         0.965000
+F1_Score         0.975265
+Precision_Score  0.971831
+Recall_Score     0.978723
 ---Data Description---
