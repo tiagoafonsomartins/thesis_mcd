@@ -67,51 +67,89 @@ german_credit_index = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 german_credit_cat_cols_index = [ 2, 3, 5, 6, 8, 9]#, 11, 13, 14, 16, 18, 19]
 iris_index = [0, 1, 2, 3]
 heloc_index = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
-default_credit_columns = ["Given credit (NT$)",
-                          "Gender",
-                          "Education",
-                          "Marital status",
-                          "Age",
-                          "Past, monthly payment (-1)",
-                          "Past, monthly payment (-2)",
-                          "Past, monthly payment (-3)",
-                          "Past, monthly payment (-4)",
-                          "Past, monthly payment (-5)",
-                          "Past, monthly payment (-6)",
-                          "Past, monthly bill (-1)",
-                          "Past, monthly bill (-2)",
-                          "Past, monthly bill (-3)",
-                          "Past, monthly bill (-4)",
-                          "Past, monthly bill (-5)",
-                          "Past, monthly bill (-6)",
-                          "Prev. payment in NT$ (-1)",
-                          "Prev. payment in NT$ (-2)",
-                          "Prev. payment in NT$ (-3)",
-                          "Prev. payment in NT$ (-4)",
-                          "Prev. payment in NT$ (-5)",
-                          "Prev. payment in NT$ (-6)",
-                          "Y"]
+#default_credit_columns = ["Given credit (NT$)",
+#                          "Gender",
+#                          "Education",
+#                          "Marital status",
+#                          "Age",
+#                          "Past, monthly payment (-1)",
+#                          "Past, monthly payment (-2)",
+#                          "Past, monthly payment (-3)",
+#                          "Past, monthly payment (-4)",
+#                          "Past, monthly payment (-5)",
+#                          "Past, monthly payment (-6)",
+#                          "Past, monthly bill (-1)",
+#                          "Past, monthly bill (-2)",
+#                          "Past, monthly bill (-3)",
+#                          "Past, monthly bill (-4)",
+#                          "Past, monthly bill (-5)",
+#                          "Past, monthly bill (-6)",
+#                          "Prev. payment in NT$ (-1)",
+#                          "Prev. payment in NT$ (-2)",
+#                          "Prev. payment in NT$ (-3)",
+#                          "Prev. payment in NT$ (-4)",
+#                          "Prev. payment in NT$ (-5)",
+#                          "Prev. payment in NT$ (-6)",
+#                          "Y"]
+
+
+default_credit_cols = ["Given credit (NT$)",
+"Education",
+"Age",
+"Past, monthly payment (-1)",
+"Past, monthly payment (-2)",
+"Past, monthly bill (-1)",
+"Past, monthly bill (-2)",
+"Prev. payment in NT$ (-1)",
+"Prev. payment in NT$ (-2)",
+"Y",
+"Gender_female",
+"Gender_male",
+"Marital status_married",
+"Marital status_others",
+"Marital status_single"]
+
+default_credit_index = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+
+default_credit_cat_index = [1, 3, 4, 10, 11, 12, 13, 14]
+
+default_credit_cat = ["Gender_female",
+                      "Gender_male",
+                      "Marital status_married",
+                      "Marital status_others",
+                      "Marital status_single",
+                      "Past, monthly payment (-1)",
+                      "Past, monthly payment (-2)"]
+
 default_credit_cont_cols = ["Given credit (NT$)",
                             "Age",
-                            "Past, monthly payment (-1)",
-                            "Past, monthly payment (-2)",
-                            "Past, monthly payment (-3)",
-                            "Past, monthly payment (-4)",
-                            "Past, monthly payment (-5)",
-                            "Past, monthly payment (-6)",
                             "Past, monthly bill (-1)",
                             "Past, monthly bill (-2)",
-                            "Past, monthly bill (-3)",
-                            "Past, monthly bill (-4)",
-                            "Past, monthly bill (-5)",
-                            "Past, monthly bill (-6)",
                             "Prev. payment in NT$ (-1)",
-                            "Prev. payment in NT$ (-2)",
-                            "Prev. payment in NT$ (-3)",
-                            "Prev. payment in NT$ (-4)",
-                            "Prev. payment in NT$ (-5)",
-                            "Prev. payment in NT$ (-6)",
-                            ]
+                            "Prev. payment in NT$ (-2)"]#[0, 2, 5, 6, 7, 8, 9]
+
+
+#default_credit_cont_cols = ["Given credit (NT$)",
+#                            "Age",
+#                            "Past, monthly payment (-1)",
+#                            "Past, monthly payment (-2)",
+#                            "Past, monthly payment (-3)",
+#                            "Past, monthly payment (-4)",
+#                            "Past, monthly payment (-5)",
+#                            "Past, monthly payment (-6)",
+#                            "Past, monthly bill (-1)",
+#                            "Past, monthly bill (-2)",
+#                            "Past, monthly bill (-3)",
+#                            "Past, monthly bill (-4)",
+#                            "Past, monthly bill (-5)",
+#                            "Past, monthly bill (-6)",
+#                            "Prev. payment in NT$ (-1)",
+#                            "Prev. payment in NT$ (-2)",
+#                            "Prev. payment in NT$ (-3)",
+#                            "Prev. payment in NT$ (-4)",
+#                            "Prev. payment in NT$ (-5)",
+#                            "Prev. payment in NT$ (-6)",
+#                            ]
 german_credit_columns = ["Status of existing checking account",
                          "Duration in month",
                          "Credit history",
@@ -150,18 +188,21 @@ german_num_cols = ["duration", "amount", "installment_rate", "residence_since", 
 
 # Reading the 3 datasets
 # Default Credit target feat. values: 1 = Default; 0 = Not default
-default_credit = pd.read_csv("datasets/default of credit card clients.csv", delimiter=';', header=0)
-default_credit.columns = default_credit_columns
-default_credit_anchors = pd.read_csv("datasets/default of credit card clients.csv", index_col=None, delimiter=';',
-                                     header=None)
-default_credit_anchors.columns = default_credit_columns
-# german_credit = pd.read_csv("datasets/german_data.csv", delimiter=';', header=0)
-iris = pd.read_csv("datasets/iris.csv", delimiter=';', header=None)
-iris.columns = iris_target
-german_credit_num = pd.read_csv("datasets/german.data-numeric.csv", delimiter=';', header=0)
-german_credit_num = german_credit_num.drop(["cost_matrix_1", "cost_matrix_2", "cost_matrix_3", "cost_matrix_4"], axis=1)
-german_credit_num.columns = german_credit_columns
-heloc = pd.read_csv("datasets/heloc_dataset_v1.csv", delimiter=',', header=0)
+#default_credit = pd.read_csv("datasets/default of credit card clients.csv", delimiter=';', header=0)
+default_credit = pd.read_csv("default_credit_clean.csv", index_col=None, delimiter=';', header=0)
+
+
+#default_credit.columns = default_credit_columns
+#default_credit_anchors = pd.read_csv("datasets/default of credit card clients.csv", index_col=None, delimiter=';',
+#                                     header=None)
+#default_credit_anchors.columns = default_credit_columns
+## german_credit = pd.read_csv("datasets/german_data.csv", delimiter=';', header=0)
+#iris = pd.read_csv("datasets/iris.csv", delimiter=';', header=None)
+#iris.columns = iris_target
+#german_credit_num = pd.read_csv("datasets/german.data-numeric.csv", delimiter=';', header=0)
+#german_credit_num = german_credit_num.drop(["cost_matrix_1", "cost_matrix_2", "cost_matrix_3", "cost_matrix_4"], axis=1)
+#german_credit_num.columns = german_credit_columns
+#heloc = pd.read_csv("datasets/heloc_dataset_v1.csv", delimiter=',', header=0)
 
 # INICIO TESTE DATASET DEFAULT CREDIT
 # Default Credit - Data preparation and split into train/test
@@ -177,8 +218,8 @@ xgb_final = xgboost.XGBClassifier(tree_method='hist',
 
 random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
 
-analysis_explanation(default_credit, xgb_final, default_credit_index, "default_credit", "xgboost", "Y", 23, None,
-                     [0, 1], default_credit_cat_cols, default_credit_cat_cols_index, default_credit_cont_cols)
+analysis_explanation(default_credit, xgb_final, default_credit_index, "default_credit", "xgboost", "Y", 9, None,
+                     [0, 1], default_credit_cat, default_credit_cat_index, default_credit_cont_cols)
 # analysis_explanation(default_credit, random_forest_classifier, default_credit_index, "default_credit", "random_forest", "Y", 23, None,
 #                     [0, 1], default_credit_cat_cols)
 # FIM TESTE DATASET 1
@@ -194,8 +235,8 @@ xgb_final = xgboost.XGBClassifier(tree_method='hist',
                                   random_state=42)
 
 random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
-analysis_explanation(iris, xgb_final, iris_index, "iris", "xgboost", "class", 4,
-                     ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], [0, 1, 2], None, None, iris_no_target)
+#analysis_explanation(iris, xgb_final, iris_index, "iris", "xgboost", "class", 4,
+#                     ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], [0, 1, 2], None, None, iris_no_target)
 # analysis_explanation(iris, random_forest_classifier, iris_index, "iris", "xgboost", "class", 4,
 #                     ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], [0, 1, 2], None)
 # None, [0, 1, 2], None)
@@ -211,22 +252,10 @@ xgb_final = xgboost.XGBClassifier(tree_method='hist',
                                   early_stop=10,
                                   random_state=42)
 
-random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
-analysis_explanation(german_credit_num, xgb_final, german_credit_index, "german_credit", "xgboost", "Risk", 20,
-                     ['1', '2'], [0, 1], german_cat_cols, german_credit_cat_cols_index, german_cont_cols)
+#random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
+#analysis_explanation(german_credit_num, xgb_final, german_credit_index, "german_credit", "xgboost", "Risk", 20,
+#                     ['1', '2'], [0, 1], german_cat_cols, german_credit_cat_cols_index, german_cont_cols)
 # analysis_explanation(german_credit_num, random_forest_classifier, german_credit_index, "german_credit", "xgboost", "Risk", 20,
 #                     ['1', '2'], [0, 1], None)
 
-# HELOC - Data preparation and split into train/test
-xgb_final = xgboost.XGBClassifier(tree_method='hist',
-                                  n_estimators=800,
-                                  min_child_weight=6,
-                                  max_depth=2,
-                                  gamma=0,
-                                  eta=0.4,
-                                  early_stop=10,
-                                  random_state=42)
 
-random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
-#analysis_explanation(heloc, xgb_final, heloc_index, "heloc", "xgboost", "RiskPerformance", 21,
-#                     ["Bad", "Good"], [0, 1], None)

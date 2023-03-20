@@ -1,24 +1,20 @@
 Original Instance
-Index(['Given credit (NT$)', 'Gender', 'Education', 'Marital status', 'Age',
-       'Past, monthly payment (-1)', 'Past, monthly payment (-2)',
-       'Past, monthly payment (-3)', 'Past, monthly payment (-4)',
-       'Past, monthly payment (-5)', 'Past, monthly payment (-6)',
-       'Past, monthly bill (-1)', 'Past, monthly bill (-2)',
-       'Past, monthly bill (-3)', 'Past, monthly bill (-4)',
-       'Past, monthly bill (-5)', 'Past, monthly bill (-6)',
-       'Prev. payment in NT$ (-1)', 'Prev. payment in NT$ (-2)',
-       'Prev. payment in NT$ (-3)', 'Prev. payment in NT$ (-4)',
-       'Prev. payment in NT$ (-5)', 'Prev. payment in NT$ (-6)', 'Y'],
+Index(['Given credit (NT$)', 'Education', 'Age', 'Past, monthly payment (-1)',
+       'Past, monthly payment (-2)', 'Past, monthly bill (-1)',
+       'Past, monthly bill (-2)', 'Prev. payment in NT$ (-1)',
+       'Prev. payment in NT$ (-2)', 'Y', 'Gender_female', 'Gender_male',
+       'Marital status_married', 'Marital status_others',
+       'Marital status_single'],
       dtype='object')
-[[90000 '2' '2' '2' 34 0 0 0 0 0 0 29239 14027 13559 14331 14948 15549
-  1518 1500 1000 1000 1000 5000 0]]
+[[50000.0 '1' 37 '0.0' '0.0' 64400.0 57069.0 2500.0 1815.0 '0' '1' '0'
+  '0' '1' 0]]
 Counterfactuals Generated
-[[  90000       2       2       2      34       0       0       0       0
-        0       0   29239   14027 1241239   14331   14948   15549    1518
-     1500    1000    1000    1000    5000       1]
- [  90000       2       2       2      34       0       5       0       0
-        0       0   29239   14027 1551858   14331   14948   15549    1518
-     1500    1000    1000    1000    5000       1]
- [  90000       2       2       2      34       2       0       0       0
-        0       0   29239   14027   13559   14331   14948   15549    1518
-     1500    1000    1000    1000    5000       1]]
+[[5.000000e+04 1.000000e+00 3.700000e+01 0.000000e+00 0.000000e+00
+  6.440000e+04 1.366419e+05 2.500000e+03 1.815000e+03 0.000000e+00
+  1.000000e+00 0.000000e+00 0.000000e+00 1.000000e+00 1.000000e+00]
+ [5.000000e+04 1.000000e+00 3.700000e+01 0.000000e+00 0.000000e+00
+  6.440000e+04 1.404005e+05 2.500000e+03 6.029700e+03 0.000000e+00
+  1.000000e+00 0.000000e+00 0.000000e+00 1.000000e+00 1.000000e+00]
+ [5.000000e+04 1.000000e+00 3.900000e+01 0.000000e+00 0.000000e+00
+  6.440000e+04 1.347439e+05 2.500000e+03 1.815000e+03 0.000000e+00
+  1.000000e+00 0.000000e+00 0.000000e+00 1.000000e+00 1.000000e+00]]
