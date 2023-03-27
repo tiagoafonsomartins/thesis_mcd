@@ -189,7 +189,7 @@ german_num_cols = ["duration", "amount", "installment_rate", "residence_since", 
 # Reading the 3 datasets
 # Default Credit target feat. values: 1 = Default; 0 = Not default
 #default_credit = pd.read_csv("datasets/default of credit card clients.csv", delimiter=';', header=0)
-default_credit = pd.read_csv("default_credit_clean.csv", index_col=None, delimiter=';', header=0)
+default_credit = pd.read_csv("default_credit_clean_scaled_nooutliers removed for past pay.csv", index_col=None, delimiter=';', header=0)
 
 
 #default_credit.columns = default_credit_columns

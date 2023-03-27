@@ -106,6 +106,7 @@ def pdp_explainer(model, x_axis, features, feature_names, dataset_name, target=N
 # x_train/x_test - train/test dataset as numpy array
 # idx - integer referring to the preferred instance for generation of explanation
 def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name, idx=0):
+    pd.set_option('display.float_format', lambda x: '%0.2f' % x)
     permute_attack = permute.GAdvExample(feature_names=list(feature_names),
                                          sol_per_pop=30, num_parents_mating=15, cat_vars_ohe=None,
                                          num_generations=200, n_runs=10, black_list=None,
@@ -131,7 +132,10 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
     #permute_tmp.append(pd.DataFrame(permute_attack.results.data).round(3).values)
     permute_tmp.append("\n original instance \n")
     permute_tmp.append(pd.DataFrame(x_test[idx, :]).values)
-
+    #to_save = pd.concat([pd.DataFrame(x_test[idx, :]).transpose(), pd.DataFrame(x_sucess)])
+    to_save = permute_attack.results.data
+    #to_save.columns = feature_names
+    to_save.to_csv("results/explanations/" + dataset_name + "/permuteattack_explanation.csv", index=False)
     af.save_to_file_2("results/explanations/" + dataset_name + "/success_permuteattack_explanation.txt", permute_tmp)
 
     #visualization of data regarding the entire dataset
@@ -141,7 +145,7 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
     print("X_TEST", len(x_test))
     plt.pyplot.style.use('ggplot')
 
-    for xi in x_test[0:295]:
+    for xi in x_test[0:70]:
         x_all, x_changes, x_sucess = permute_attack.attack(model, x=xi,x_train=x_train)
         print("X_TEST ITERATION", i)
         i+=1
