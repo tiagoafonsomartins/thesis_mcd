@@ -1,0 +1,36 @@
+---Data info---
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 22816 entries, 0 to 22815
+Data columns (total 15 columns):
+ #   Column                      Non-Null Count  Dtype  
+---  ------                      --------------  -----  
+ 0   Given credit (NT$)          22816 non-null  float64
+ 1   Education                   22816 non-null  float64
+ 2   Age                         22816 non-null  float64
+ 3   Past, monthly payment (-1)  22816 non-null  float64
+ 4   Past, monthly payment (-2)  22816 non-null  float64
+ 5   Past, monthly bill (-1)     22816 non-null  float64
+ 6   Past, monthly bill (-2)     22816 non-null  float64
+ 7   Prev. payment in NT$ (-1)   22816 non-null  float64
+ 8   Prev. payment in NT$ (-2)   22816 non-null  float64
+ 9   Y                           22816 non-null  float64
+ 10  Gender_female               22816 non-null  float64
+ 11  Gender_male                 22816 non-null  float64
+ 12  Marital status_married      22816 non-null  float64
+ 13  Marital status_others       22816 non-null  float64
+ 14  Marital status_single       22816 non-null  float64
+dtypes: float64(15)
+memory usage: 2.6 MB
+
+---Data Description---
+       Given credit (NT$)     Education           Age  Past, monthly payment (-1)  Past, monthly payment (-2)  Past, monthly bill (-1)  Past, monthly bill (-2)  Prev. payment in NT$ (-1)  Prev. payment in NT$ (-2)             Y  Gender_female   Gender_male  Marital status_married  Marital status_others  Marital status_single
+count        22816.000000  22816.000000  22816.000000                22816.000000                22816.000000             22816.000000             22816.000000               22816.000000               22816.000000  22816.000000   22816.000000  22816.000000            22816.000000           22816.000000           22816.000000
+mean             0.267882      0.490281      0.454834                    0.357764                    0.260149                 0.287446                 0.216476                   0.206908                   1.839499      0.230365       0.611325      0.388675                0.446134               0.011352               0.542514
+std              0.228570      0.258318      0.281338                    0.229380                    0.219766                 0.212270                 0.204616                   0.202885                   0.707192      0.421075       0.487460      0.487460                0.497101               0.105940               0.498200
+min              0.000000      0.000000      0.000000                    0.000000                    0.000000                 0.000000                 0.000000                   0.000000                   1.000000      0.000000       0.000000      0.000000                0.000000               0.000000               0.000000
+25%              0.080000      0.250000      0.250000                    0.179487                    0.080818                 0.116922                 0.056554                   0.036545                   1.000000      0.000000       0.000000      0.000000                0.000000               0.000000               0.000000
+50%              0.200000      0.500000      0.500000                    0.307692                    0.174709                 0.205951                 0.178919                   0.161000                   2.000000      0.000000       1.000000      0.000000                0.000000               0.000000               1.000000
+75%              0.380000      0.500000      0.500000                    0.512821                    0.358100                 0.389215                 0.311644                   0.289341                   2.000000      0.000000       1.000000      1.000000                1.000000               0.000000               1.000000
+max              1.000000      1.000000      1.000000                    1.000000                    1.000000                 1.000000                 1.000000                   1.000000                   4.000000      1.000000       1.000000      1.000000                1.000000               1.000000               1.000000
+---Prediction column values---
+[(0, 17560), (1, 5256)]

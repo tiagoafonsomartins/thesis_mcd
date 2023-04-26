@@ -119,7 +119,7 @@ def find_next_max(clf, x_in, ohe_vars_cat, target):
         ind_target = target
 
     y_target = [0 for i in range(n_class)]
-    y_target[ind_target] = 1
+    y_target[int(ind_target)] = 1
 
     return y_target, n_class, ind_target
 

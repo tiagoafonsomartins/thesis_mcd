@@ -1,4 +1,5 @@
 import lime
+import matplotlib.pyplot
 import numpy as np
 import pandas as pd
 import shap
@@ -73,7 +74,7 @@ def anchor_explainer(model, dataset, target_name, class_idx, feature_names, feat
 def pdp_explainer(model, x_axis, features, feature_names, dataset_name, target=None):
     print("features \n", features, "\n", "feat names \n", feature_names, "\n")
     deciles = {0: np.linspace(0, 1, num=5)}
-    plt.pyplot.clf()
+    #plt.pyplot.clf()
 
     if target != None:
         if len(model.classes_) > 2:
@@ -92,6 +93,8 @@ def pdp_explainer(model, x_axis, features, feature_names, dataset_name, target=N
         pdp_results = partial_dependence(model, x_axis, features)
         pdp = PartialDependenceDisplay.from_estimator(model, x_axis, features=features, feature_names=feature_names)
         plt.pyplot.savefig("results/explanations/" + dataset_name + "/" + str(features[0]) + "_pdp_explanation.png")
+
+    #matplotlib.pyplot.close("all")
 
 
 # plot_partial_dependence(model, x_axis, features=features, feature_names=feature_names)
@@ -133,9 +136,10 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
     permute_tmp.append("\n original instance \n")
     permute_tmp.append(pd.DataFrame(x_test[idx, :]).values)
     #to_save = pd.concat([pd.DataFrame(x_test[idx, :]).transpose(), pd.DataFrame(x_sucess)])
-    to_save = permute_attack.results.data
+    if permute_attack.results is not None:
+        to_save = permute_attack.results.data
     #to_save.columns = feature_names
-    to_save.to_csv("results/explanations/" + dataset_name + "/permuteattack_explanation.csv", index=False)
+        to_save.to_csv("results/explanations/" + dataset_name + "/permuteattack_explanation.csv", index=False)
     af.save_to_file_2("results/explanations/" + dataset_name + "/success_permuteattack_explanation.txt", permute_tmp)
 
     #visualization of data regarding the entire dataset
@@ -273,24 +277,34 @@ def shap_explainer(model, x, feature_names, dataset_name, multioutput=False):
         plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_force.png", bbox_inches="tight")
         plt.pyplot.clf()
     else:
-        explainer = shap.Explainer(model)
+        #masker = shap.maskers.Independent(data, 10)
+
+        explainer = shap.Explainer(model.predict_proba, data)
+
         shap_values = explainer(data)
-        shap.plots.waterfall(shap_values[0], show=False)
-        plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_waterfall.png", bbox_inches="tight")
+        #shap.plots.waterfall(shap_values[0], show=False)
+        #plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_waterfall.png", bbox_inches="tight")
         plt.pyplot.clf()
         # fig = shap.force_plot(explainer_tree.expected_value, shap_values[0, :], x[0, :])
         # plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_force_plot.png")
         # plt.pyplot.clf()
-        shap.summary_plot(shap_values, data, plot_type="bar", show=False)
+        #
+        #IMPORTANCIA DE APENAS UMA CLASSE, NAO SERVE BEM PARA MULTIOUTPUT
+        shap.plots.bar(shap_values[:, :, 1], show=False)
+        plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_bar_1_plot.png", bbox_inches="tight")
+        plt.pyplot.clf()
+
+        shap.summary_plot(shap_values[:, :, 1], x, plot_type="bar", show=False)
         # fig = shap.summary_plot(shap_values.shap_values(data), data, plot_type="bar", show=False)
         plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_summary_plot.png", bbox_inches="tight")
         plt.pyplot.clf()
+
 
         # Feature interactions is not useful...
         # fig = shap.summary_plot(shap_interactions, data, show=False)
         for feat in feature_names:
             # fig = shap.plots.scatter(shap_values.shap_values(data)[:, feat], show=False)
-            shap.plots.scatter(shap_values[:, feat], show=False)
+            shap.plots.scatter(shap_values[:, feat, 1], show=False)
             plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_scatter_" + feat + ".png",
                                bbox_inches="tight")
             plt.pyplot.clf()
@@ -298,7 +312,7 @@ def shap_explainer(model, x, feature_names, dataset_name, multioutput=False):
         # shap.plots.force(explainer.expected_value, shap_values[0], data.iloc[0,:], show=False)
         # plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_force.png")
         # plt.pyplot.clf()
-        shap.plots.bar(shap_values[0], show=False)
+        shap.plots.bar(shap_values[:, :, 1], show=False)
         plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_barplot.png", bbox_inches="tight")
         plt.pyplot.clf()
 
