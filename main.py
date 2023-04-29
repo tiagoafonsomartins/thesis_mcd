@@ -1,12 +1,153 @@
 import matplotlib
 import pandas as pd
+import numpy as np
 import sklearn
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neural_network import MLPClassifier
 import auxiliary_functions as af
 import xgboost
+from datetime import datetime
+
 
 import explainers as exp
+
+def hyper_parm_optimization(dataset, target, dataset_name):
+    y = dataset[target]
+    X = dataset.drop(target, axis=1)
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+    best_par = []
+    logistic_regressor = sklearn.linear_model.LogisticRegression(solver='lbfgs', max_iter=1000, random_state=0)
+    param_grid = {"penalty": ["l2"],
+                  "C": [10**-2, 10**-1, 10**0, 10**1, 10**2]}
+    date_begin = datetime.now()
+    gs = GridSearchCV(logistic_regressor, param_grid, cv=3, n_jobs=-1, scoring='roc_auc').fit(X_train, y_train)
+    date_end = datetime.now()
+    stat_info = gs.best_params_
+    stat_info["date_begin"] = date_begin
+    stat_info["date_end"] = date_end
+    duration_s = (date_end - date_begin).total_seconds()
+    stat_info["duration_s"] = duration_s.total_seconds()
+    stat_info["duration_m"] = divmod(duration_s, 60)[0]
+    stat_info["model_name"] = "Logistic Regression"
+    best_par.append(stat_info)
+
+    print("lr done")
+
+
+    svm_regressor = sklearn.svm.SVR()
+    param_grid = {'C': [0.1, 1, 10, 100, 1000],
+                  'gamma': [1, 0.1, 0.01, 0.001, 0.0001],
+                  'kernel': ['rbf']}
+    gs = GridSearchCV(svm_regressor, param_grid, cv=3, n_jobs=-1, scoring='roc_auc').fit(X_train, y_train)
+    date_end = datetime.now()
+    stat_info = gs.best_params_
+    stat_info["date_begin"] = date_begin
+    stat_info["date_end"] = date_end
+    duration_s = (date_end - date_begin).total_seconds()
+    stat_info["duration_s"] = duration_s.total_seconds()
+    stat_info["duration_m"] = divmod(duration_s, 60)[0]
+    stat_info["model_name"] = "Support Vector Machine"
+    best_par.append(stat_info)
+    print("svm done")
+
+
+    gaussian_naive_bayes = GaussianNB()
+    param_grid = {'var_smoothing': np.logspace(0,-9, num=100)}
+    gs = GridSearchCV(gaussian_naive_bayes, param_grid, cv=3, n_jobs=-1, scoring='roc_auc').fit(X_train, y_train)
+    date_end = datetime.now()
+    stat_info = gs.best_params_
+    stat_info["date_begin"] = date_begin
+    stat_info["date_end"] = date_end
+    duration_s = (date_end - date_begin).total_seconds()
+    stat_info["duration_s"] = duration_s.total_seconds()
+    stat_info["duration_m"] = divmod(duration_s, 60)[0]
+    stat_info["model_name"] = "Gaussian Naive-Bayes"
+
+    best_par.append(stat_info)
+
+    print("gnb done")
+    random_forest_classifier = sklearn.ensemble.RandomForestClassifier(random_state=0)
+    param_grid = {'bootstrap': [True, False],
+                  'max_depth': [10, 20, 30, 40],
+                  'min_samples_leaf': [1, 2, 4],
+                  'min_samples_split': [2, 5, 10],
+                  'n_estimators': [200, 400, 600]}
+    gs = GridSearchCV(random_forest_classifier, param_grid, cv=3, n_jobs=-1, scoring='roc_auc').fit(X_train, y_train)
+    date_end = datetime.now()
+    stat_info = gs.best_params_
+    stat_info["date_begin"] = date_begin
+    stat_info["date_end"] = date_end
+    duration_s = (date_end - date_begin).total_seconds()
+    stat_info["duration_s"] = duration_s.total_seconds()
+    stat_info["duration_m"] = divmod(duration_s, 60)[0]
+    stat_info["model_name"] = "Random Forest"
+
+    best_par.append(stat_info)
+
+    print("rf done")
+
+    mlp_regressor = MLPClassifier()
+    param_grid = parameter_space = {'hidden_layer_sizes': [(10, 30, 10), (20, 25)],
+        'activation': ['tanh', 'relu'],
+        'solver': ['sgd', 'adam'],
+        'alpha': [0.0001, 0.05],
+        'learning_rate': ['constant', 'adaptive']}
+    gs = GridSearchCV(mlp_regressor, param_grid, cv=3, n_jobs=-1, scoring='roc_auc').fit(X_train, y_train)
+    date_end = datetime.now()
+    stat_info = gs.best_params_
+    stat_info["date_begin"] = date_begin
+    stat_info["date_end"] = date_end
+    duration_s = (date_end - date_begin).total_seconds()
+    stat_info["duration_s"] = duration_s.total_seconds()
+    stat_info["duration_m"] = divmod(duration_s, 60)[0]
+    stat_info["model_name"] = "Multi-Layer Perceptron"
+
+    best_par.append(stat_info)
+    print("mlp done")
+
+
+    xgb_final = xgboost.XGBClassifier(random_state=42)
+    param_grid = {"colsample_bytree": [0.3, 0.5, 0.8],
+        "reg_alpha": [0, 0.5, 1, 5],
+        "reg_lambda": [0, 0.5, 1, 5]}
+    gs = GridSearchCV(xgb_final, param_grid, cv=3, n_jobs=-1, scoring='roc_auc').fit(X_train, y_train)
+    date_end = datetime.now()
+    stat_info = gs.best_params_
+    stat_info["date_begin"] = date_begin
+    stat_info["date_end"] = date_end
+    duration_s = (date_end - date_begin).total_seconds()
+    stat_info["duration_s"] = duration_s.total_seconds()
+    stat_info["duration_m"] = divmod(duration_s, 60)[0]
+    stat_info["model_name"] = "XGBoost"
+
+    best_par.append(stat_info)
+    print("xgb done")
+
+
+    decision_tree = sklearn.tree.DecisionTreeClassifier(random_state=0)
+    param_grid = {'min_samples_leaf': [1, 2, 3],
+        'max_depth': [1, 2, 3]}
+    gs = GridSearchCV(decision_tree, param_grid, cv=3, n_jobs=-1, scoring='roc_auc').fit(X_train, y_train)
+    date_end = datetime.now()
+    stat_info = gs.best_params_
+    stat_info["date_begin"] = date_begin
+    stat_info["date_end"] = date_end
+    duration_s = (date_end - date_begin).total_seconds()
+    stat_info["duration_s"] = duration_s.total_seconds()
+    stat_info["duration_m"] = divmod(duration_s, 60)[0]
+    stat_info["model_name"] = "Decision Tree"
+    best_par.append(stat_info)
+    print("dt done")
+
+
+
+    import json
+    with open('results/best_parameters/'+dataset_name+"par", 'w') as fout:
+        json.dump(best_par, fout)
 
 
 def analysis_explanation(dataset, model, dataset_cols_index, dataset_name, model_name, target_name, target_idx,
@@ -49,10 +190,12 @@ def analysis_explanation(dataset, model, dataset_cols_index, dataset_name, model
     dataset_permute = dataset_permute.astype(str)
     #exp.permuteattack_explainer(model, dataset_no_target.columns, x_train, x_test, dataset_name)
 
+
+# This function will initiate each predictive model with the best hyper-parameters
 def model_constructor():
 
-    #logistic_regressor = sklearn.linear_model.LogisticRegression(random_state=0)
-    #svm_regressor = sklearn.svm.SVC(probability=True)
+    logistic_regressor = sklearn.linear_model.LogisticRegression(random_state=0)
+    svm_regressor = sklearn.svm.SVR(probability=True)
     gaussian_naive_bayes = GaussianNB()
     random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
     mlp_regressor = MLPClassifier()
@@ -66,7 +209,7 @@ def model_constructor():
                                       random_state=42)
     decision_tree = sklearn.tree.DecisionTreeClassifier()
 
-    return [ gaussian_naive_bayes, random_forest_classifier, mlp_regressor, xgb_final, decision_tree], ["gnb", "rf", "mlp", "xgb", "dt"]
+    return [logistic_regressor, gaussian_naive_bayes, random_forest_classifier, mlp_regressor, xgb_final, decision_tree], ["logistic_regressor", "gnb", "rf", "mlp", "xgb", "dt"]
 
 
 iris_target = ["sepal length (cm)",
@@ -268,49 +411,36 @@ default_credit_initial.columns = default_credit_columns_initial
 german_credit = pd.read_csv("german_scaled.csv", delimiter=';', header=0)
 iris = pd.read_csv("datasets/iris.csv", delimiter=';', header=None)
 iris.columns = iris_target
-#german_credit_num = pd.read_csv("datasets/german.data-numeric.csv", delimiter=';', header=0)
-#german_credit_num = german_credit_num.drop(["cost_matrix_1", "cost_matrix_2", "cost_matrix_3", "cost_matrix_4"], axis=1)
-#german_credit_num.columns = german_credit_columns
-#heloc = pd.read_csv("datasets/heloc_dataset_v1.csv", delimiter=',', header=0)
 
-#models, names = model_constructor()
-#i = 0
-#for model in models:
-#    analysis_explanation(default_credit_initial, model, default_credit_index_sc, "default_credit_initial", names[i], "Y", 23, None,
-#                         [0, 1], default_credit_cat_cols, default_credit_cat_index, default_credit_cont_cols)
-#    print("model ", names[i])
-#    i+=1
+
+# Define best hyper-parameters
+hp_def_credit = hyper_parm_optimization(default_credit_initial, "Y", "default_credit_initial")
+hp_def_credit_sc = hyper_parm_optimization(default_credit, "Y", "default_credit")
+hp_iris = hyper_parm_optimization(iris, "class", "iris")
+hp_german = hyper_parm_optimization(german_credit, "Risk", "german")
+
 
 # INICIO TESTE DATASET DEFAULT CREDIT
-# Default Credit - Data preparation and split into train/test
-# Black-box model
-#xgb_final = xgboost.XGBClassifier(tree_method='hist',
-#                                  n_estimators=800,
-#                                  min_child_weight=6,
-#                                  max_depth=2,
-#                                  gamma=0,
-#                                  eta=0.4,
-#                                  early_stop=10,
-#                                  random_state=42)
-#
-#random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
-#analysis_explanation(default_credit_initial, xgb_final, default_credit_index_sc, "default_credit_initial", names[i], "Y", 23, None,
-#                     [0, 1], default_credit_cat_cols, default_credit_cat_index, default_credit_cont_cols)
+models, names = model_constructor()
+i = 0
+for model in models:
+    analysis_explanation(default_credit_initial, model, default_credit_index_sc, "default_credit_initial", names[i], "Y", 23, None,
+                         [0, 1], default_credit_cat_cols, default_credit_cat_index, default_credit_cont_cols)
+    #matplotlib.pyplot.close("all")
+    print("model ", names[i])
+    i+=1
 
 
-#models, names = model_constructor()
-#i=0
-#for model in models:
-#    analysis_explanation(default_credit, model, default_credit_index_sc, "default_credit", names[i], "Y", 9, None,
-#                         [0, 1], default_credit_cat_sc, default_credit_cat_index_sc, default_credit_cont_cols_sc)
-#    print("model ", names[i])
-#    i+=1
+# DEFAULT CREDIT - Scaled Dataset
+models, names = model_constructor()
+i=0
+for model in models:
+    analysis_explanation(default_credit, model, default_credit_index_sc, "default_credit", names[i], "Y", 9, None,
+                         [0, 1], default_credit_cat_sc, default_credit_cat_index_sc, default_credit_cont_cols_sc)
+    #matplotlib.pyplot.close("all")
+    print("model ", names[i])
+    i+=1
 
-# Scaled Dataset
-#analysis_explanation(default_credit, model, default_credit_index_sc, "default_credit", "xgboost", "Y", 9, None,
-#                     [0, 1], default_credit_cat_sc, default_credit_cat_index_sc, default_credit_cont_cols_sc)
-
-# FIM TESTE DATASET 1
 
 # INICIO TESTE DATASET IRIS
 xgb_final = xgboost.XGBClassifier(tree_method='hist',
@@ -324,44 +454,21 @@ xgb_final = xgboost.XGBClassifier(tree_method='hist',
 
 random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
 
-#models, names = model_constructor()
-#i=0
-#for model in models:
-#    analysis_explanation(iris, xgb_final, iris_index, "iris", names[i], "class", 4,
-#                         ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], [0, 1, 2], None, None, iris_no_target)
-#    print("model ", names[i])
-#    i+=1
-
-#analysis_explanation(iris, xgb_final, iris_index, "iris", "xgboost", "class", 4,
-#                     ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], [0, 1, 2], None, None, iris_no_target)
-# analysis_explanation(iris, random_forest_classifier, iris_index, "iris", "xgboost", "class", 4,
-#                     ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], [0, 1, 2], None)
-# None, [0, 1, 2], None)
-# FIM TESTE DATASET 1
+models, names = model_constructor()
+i=0
+for model in models:
+    analysis_explanation(iris, model, iris_index, "iris", names[i], "class", 4,
+                         ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], [0, 1, 2], None, None, iris_no_target)
+    #matplotlib.pyplot.close("all")
+    print("model ", names[i])
+    i+=1
 
 # German Credit - Data preparation and split into train/test
-xgb_final = xgboost.XGBClassifier(tree_method='hist',
-                                  n_estimators=800,
-                                  min_child_weight=6,
-                                  max_depth=2,
-                                  gamma=0,
-                                  eta=0.4,
-                                  early_stop=10,
-                                  random_state=42)
-
 models, names = model_constructor()
 i=0
 for model in models:
     analysis_explanation(german_credit, model, german_credit_index, "german_credit", names[i], "Risk", 9,
                          ['1', '2'], [0, 1], german_cat_cols, german_credit_cat_cols_index, german_cont_cols)
-    matplotlib.pyplot.close("all")
+    #matplotlib.pyplot.close("all")
     print("model ", names[i])
     i+=1
-
-#random_forest_classifier = sklearn.ensemble.RandomForestClassifier(n_estimators=50, n_jobs=5)
-#analysis_explanation(german_credit, xgb_final, german_credit_index, "german_credit", "xgboost", "Risk", 20,
-#                    ['1', '2'], [0, 1], german_cat_cols, german_credit_cat_cols_index, german_cont_cols)
-# analysis_explanation(german_credit_num, random_forest_classifier, german_credit_index, "german_credit", "xgboost", "Risk", 20,
-#                     ['1', '2'], [0, 1], None)
-
-
