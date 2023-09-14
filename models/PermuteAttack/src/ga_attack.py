@@ -173,6 +173,7 @@ def GA_Counterfactual(
     y_target, n_class, ind_target = find_next_max(
         clf, x_in, ohe_vars_cat, target
     )
+    ind_target = int(ind_target)
     best_outputs = []
     num_weights = len(x_in)
     pop_size = (sol_per_pop, num_weights)

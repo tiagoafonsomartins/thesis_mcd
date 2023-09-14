@@ -1,5 +1,0 @@
-Given credit (NT$),Gender,Education,Marital status,Age,"Past, monthly payment (-1)","Past, monthly payment (-2)","Past, monthly payment (-3)","Past, monthly payment (-4)","Past, monthly payment (-5)","Past, monthly payment (-6)","Past, monthly bill (-1)","Past, monthly bill (-2)","Past, monthly bill (-3)","Past, monthly bill (-4)","Past, monthly bill (-5)","Past, monthly bill (-6)",Prev. payment in NT$ (-1),Prev. payment in NT$ (-2),Prev. payment in NT$ (-3),Prev. payment in NT$ (-4),Prev. payment in NT$ (-5),Prev. payment in NT$ (-6),P0,P1
-20000,1,1,2,33,1,2,2,2,2,2,17971,17399,19057,18453,19755,19288,0,2260,0,1600,0,644,1.0,0.0
-20000,1,1,2,33,1,2,2,2,2,0,17971,17399,19057,18453,19755,19288,0,2260,0,1600,0,644,0.0,1.0
-20000,1,1,2,33,1,2,2,2,2,-1,17971,17399,19057,18453,19755,19288,0,2260,0,1600,0,644,0.0,1.0
-20000,1,1,2,33,1,2,2,2,2,-2,17971,17399,19057,18453,19755,19288,0,2260,0,1600,0,644,0.0,1.0

@@ -71,10 +71,10 @@ def anchor_explainer(model, dataset, target_name, class_idx, feature_names, feat
     af.save_to_file_2("results/explanations/" + dataset_name + "/anchors.txt", anchors_data)
 
 
-def pdp_explainer(model, x_axis, features, feature_names, dataset_name, target=None):
+def pdp_explainer(model, x_axis, features, feature_names, dataset_name, model_name,  target=None):
     print("features \n", features, "\n", "feat names \n", feature_names, "\n")
     deciles = {0: np.linspace(0, 1, num=5)}
-    #plt.pyplot.clf()
+    #
 
     if target != None:
         if len(model.classes_) > 2:
@@ -84,16 +84,17 @@ def pdp_explainer(model, x_axis, features, feature_names, dataset_name, target=N
                 pdp = PartialDependenceDisplay.from_estimator(model, x_axis, features=features, feature_names=feature_names,
                                                               target=target_class)
                 plt.pyplot.savefig("results/explanations/" + dataset_name + "/" + str(features[0]) + "_target-" + str(
-                    target_class) + "_" + "_pdp_explanation.png")
+                    target_class) + "_" + "_pdp_explanation_" + model_name + ".png", dpi=1200)
         else:
             pdp_results = partial_dependence(model, x_axis, features)
             pdp = PartialDependenceDisplay.from_estimator(model, x_axis, features=features, feature_names=feature_names)
-            plt.pyplot.savefig("results/explanations/" + dataset_name + "/" + str(features[0]) + "_" + "_pdp_explanation.png")
+            plt.pyplot.savefig("results/explanations/" + dataset_name + "/" + str(features[0]) + "_" + "_pdp_explanation_" + model_name + ".png", dpi=1200)
     else:
         pdp_results = partial_dependence(model, x_axis, features)
         pdp = PartialDependenceDisplay.from_estimator(model, x_axis, features=features, feature_names=feature_names)
-        plt.pyplot.savefig("results/explanations/" + dataset_name + "/" + str(features[0]) + "_pdp_explanation.png")
-
+        plt.pyplot.savefig("results/explanations/" + dataset_name + "/" + str(features[0]) + "_pdp_explanation_" + model_name + ".png", dpi=1200)
+    plt.pyplot.clf()
+    plt.pyplot.close("all")
     #matplotlib.pyplot.close("all")
 
 
@@ -108,7 +109,7 @@ def pdp_explainer(model, x_axis, features, feature_names, dataset_name, target=N
 # feature_names - array of strings, indicating the name of the columns of the dataset
 # x_train/x_test - train/test dataset as numpy array
 # idx - integer referring to the preferred instance for generation of explanation
-def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name, idx=0):
+def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name, model_name,  idx=0):
     pd.set_option('display.float_format', lambda x: '%0.2f' % x)
     permute_attack = permute.GAdvExample(feature_names=list(feature_names),
                                          sol_per_pop=30, num_parents_mating=15, cat_vars_ohe=None,
@@ -121,7 +122,7 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
     # af.save_to_file_2("results/explanations/" + dataset_name + "/results_permuteattack_explanation.txt",
     # pd.DataFrame(permute_attack.results).values)
     plt.pyplot.clf()
-
+    plt.pyplot.close("all")
     #permute_temp saves data for a single prediction, with the counterfactual predictions
     permute_tmp = []
     permute_tmp.append("x_all \n")
@@ -139,8 +140,8 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
     if permute_attack.results is not None:
         to_save = permute_attack.results.data
     #to_save.columns = feature_names
-        to_save.to_csv("results/explanations/" + dataset_name + "/permuteattack_explanation.csv", index=False)
-    af.save_to_file_2("results/explanations/" + dataset_name + "/success_permuteattack_explanation.txt", permute_tmp)
+        to_save.to_csv("results/explanations/" + dataset_name + "/permuteattack_explanation_" + model_name + ".csv", index=False)
+    af.save_to_file_2("results/explanations/" + dataset_name + "/success_permuteattack_explanation_" + model_name + ".txt", permute_tmp)
 
     #visualization of data regarding the entire dataset
     results = []
@@ -149,7 +150,7 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
     print("X_TEST", len(x_test))
     plt.pyplot.style.use('ggplot')
 
-    for xi in x_test[0:70]:
+    for xi in x_test[0:60]:#int(len(x_test)/4)]:
         x_all, x_changes, x_sucess = permute_attack.attack(model, x=xi,x_train=x_train)
         print("X_TEST ITERATION", i)
         i+=1
@@ -163,76 +164,84 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
             adv.append(xi)
             data.append(result[0])
 
-    plt.pyplot.style.use('ggplot')
 
-    predprob_data = model.predict_proba(data)[:,1]
-    predprob_adv = model.predict_proba(adv)[:,1]
-    pred = model.predict(data)
+    if len(data) > 0 and len(adv) > 0:
+        plt.pyplot.style.use('ggplot')
 
-    # Histogram for original vs counterfactual predictions, for prediction class 1
-    plt.pyplot.clf()
-    plt.pyplot.hist(predprob_data[pred==1], label="Original Prediction")
-    plt.pyplot.hist(predprob_adv[pred==1], label="Counterfactual Prediction")
-    plt.pyplot.legend(loc='best', fontsize=13)
-    plt.pyplot.gca().set_xlabel("Prediction Probability", fontsize=13)
-    plt.pyplot.gca().set_ylabel("Counts", fontsize=13)
-    plt.pyplot.savefig("results/explanations/" + dataset_name + "/permuteattack_explanation_histogram.png")
+        predprob_data = model.predict_proba(data)[:,1]
+        predprob_adv = model.predict_proba(adv)[:,1]
+        pred = model.predict(data)
 
-    plt.pyplot.clf()
+        # Histogram for original vs counterfactual predictions, for prediction class 1
+        plt.pyplot.clf()
+        plt.pyplot.close("all")
+        plt.pyplot.hist(predprob_data[pred==1], label="Original Prediction")
+        plt.pyplot.hist(predprob_adv[pred==1], label="Counterfactual Prediction")
+        plt.pyplot.legend(loc='best', fontsize=13)
+        plt.pyplot.gca().set_xlabel("Prediction Probability", fontsize=13)
+        plt.pyplot.gca().set_ylabel("Counts", fontsize=13)
+        plt.pyplot.savefig("results/explanations/" + dataset_name + "/permuteattack_explanation_histogram_"+ model_name + ".png", dpi=1200)
 
-    # Histogram for original vs counterfactual predictions, for prediction class 0
-    plt.pyplot.hist(predprob_data[pred==0], label="Original Prediction")
-    plt.pyplot.hist(predprob_adv[pred==0], label="Counterfactual Prediction")
-    plt.pyplot.legend(loc='best', fontsize=13)
-    plt.pyplot.gca().set_xlabel("Prediction Probability", fontsize=13)
-    plt.pyplot.gca().set_ylabel("Counts", fontsize=13)
+        plt.pyplot.clf()
+        plt.pyplot.close("all")
+        # Histogram for original vs counterfactual predictions, for prediction class 0
+        plt.pyplot.hist(predprob_data[pred==0], label="Original Prediction")
+        plt.pyplot.hist(predprob_adv[pred==0], label="Counterfactual Prediction")
+        plt.pyplot.legend(loc='best', fontsize=13)
+        plt.pyplot.gca().set_xlabel("Prediction Probability", fontsize=13)
+        plt.pyplot.gca().set_ylabel("Counts", fontsize=13)
 
-    #fig = plt.pyplot.figure(figsize=(7,7))
-    plt.pyplot.savefig("results/explanations/" + dataset_name + "/permuteattack_explanation_histogram_2.png")
-    plt.pyplot.clf()
+        #fig = plt.pyplot.figure(figsize=(7,7))
+        plt.pyplot.savefig("results/explanations/" + dataset_name + "/permuteattack_explanation_histogram_2_" + model_name + ".png", dpi=1200)
+        plt.pyplot.clf()
+        plt.pyplot.close("all")
+        # Distributions of original/counterfactual predictions
 
-    # Distributions of original/counterfactual predictions
+        plt.pyplot.scatter(predprob_data[pred==1], predprob_adv[pred==1], c="b", vmin=0, vmax=1, label = "Original Pred = 1, Counterfactual Pred = 0")
+        plt.pyplot.scatter(predprob_data[pred==0], predprob_adv[pred==0], c="r", vmin=0, vmax=1, label = "Original Pred = 0, Counterfactual Pred = 1")
 
-    plt.pyplot.scatter(predprob_data[pred==1], predprob_adv[pred==1], c="b", vmin=0, vmax=1, label = "Original Pred = 1, Counterfactual Pred = 0")
-    plt.pyplot.scatter(predprob_data[pred==0], predprob_adv[pred==0], c="r", vmin=0, vmax=1, label = "Original Pred = 0, Counterfactual Pred = 1")
+        plt.pyplot.hlines(0.5, 0, 1, linestyles="--")
+        plt.pyplot.vlines(0.5, 0, 1, linestyles="--")
 
-    plt.pyplot.hlines(0.5, 0, 1, linestyles="--")
-    plt.pyplot.vlines(0.5, 0, 1, linestyles="--")
+        plt.pyplot.legend(loc='best', fontsize=13)
+        plt.pyplot.gca().set_xlabel("Original Probability", fontsize=15)
+        plt.pyplot.gca().set_ylabel("Counterfactual Probability", fontsize=15)
+        plt.pyplot.tight_layout()
+        plt.pyplot.savefig("results/explanations/" + dataset_name + "/permuteattack_explanation_scatter" + model_name + ".png", dpi=1200)
+        #plt.pyplot.savefig("results/explanations/" + dataset_name + "/permuteattack_explanation_scatter.png", type="png", dpi=600)
+        plt.pyplot.clf()
+        plt.pyplot.close("all")
 
-    plt.pyplot.legend(loc='best', fontsize=13)
-    plt.pyplot.gca().set_xlabel("Original Probability", fontsize=15)
-    plt.pyplot.gca().set_ylabel("Counterfactual Probability", fontsize=15)
-    plt.pyplot.tight_layout()
-    plt.pyplot.savefig("results/explanations/" + dataset_name + "/permuteattack_explanation_scatter.png", type="png", dpi=600)
-    #plt.pyplot.savefig("results/explanations/" + dataset_name + "/permuteattack_explanation_scatter.png", type="png", dpi=600)
-    plt.pyplot.clf()
+        # Number of features changed in order to get desired output (opposite class)
+        x_change_all = results[0][1]
+        for result in results[1:]:
+            x_change_all = pd.concat([x_change_all, result[1]])
 
+        x_change_all.head()
+        ind = model.predict(adv)==0
+        df1 = (x_change_all[ind]).sum(0).to_frame().sort_values(by=0,ascending=False)
 
-    # Number of features changed in order to get desired output (opposite class)
-    x_change_all = results[0][1]
-    for result in results[1:]:
-        x_change_all = pd.concat([x_change_all, result[1]])
+        # se alguma parte dos graficos estiver vazio e porque não foi possível criar exp contrafactuar
+        if df1.shape[1] > 1:
 
-    x_change_all.head()
+            plt.pyplot.figure(figsize=(10,6))
+            ax= plt.pyplot.subplot(1,2,1)
 
-    plt.pyplot.figure(figsize=(10,6))
-    ax= plt.pyplot.subplot(1,2,1)
+            ax = df1[df1[0]!=0].plot.bar(legend=False, fontsize=13, ax = ax)
+            ax.set_ylabel("Counts", fontsize=14)
+            ax.set_title("Pred. changed from Default to Not Default")
 
-    ind = model.predict(adv)==0
-    df1 = (x_change_all[ind]).sum(0).to_frame().sort_values(by=0,ascending=False)
-    ax = df1[df1[0]!=0].plot.bar(legend=False, fontsize=13, ax = ax)
-    ax.set_ylabel("Counts", fontsize=14)
-    ax.set_title("Pred. changed from Default to Not Default")
-    ax = plt.pyplot.subplot(1,2,2)
-    ind = model.predict(adv)==1
-    df2 = (x_change_all[ind]).sum(0).to_frame().sort_values(by=0,ascending=False)
-    df2[df2[0]!=0].plot.bar(legend=False, fontsize=13, ax=ax)
-    ax.set_title("Pred. changed from Not Default to Default")
-#
-    plt.pyplot.tight_layout()
-#
-    plt.pyplot.savefig("results/explanations/" + dataset_name + "/permuteattack_explanation_final_graph.png")
+        ind = model.predict(adv)==1
+        df2 = (x_change_all[ind]).sum(0).to_frame().sort_values(by=0,ascending=False)
+        if df2.shape[1] > 1:
+            ax = plt.pyplot.subplot(1,2,2)
+            df2[df2[0]!=0].plot.bar(legend=False, fontsize=13, ax=ax)
+            ax.set_title("Pred. changed from Not Default to Default")
 
+        plt.pyplot.tight_layout()
+
+        plt.pyplot.savefig("results/explanations/" + dataset_name + "/permuteattack_explanation_final_graph_" + model_name + ".png", dpi=1200)
+        plt.pyplot.close("all")
 
 '''
  Main method for SHAP/LIME explanations which aims to englobe the initialization of such methods, un-cluttering main.py
@@ -245,37 +254,39 @@ def permuteattack_explainer(model, feature_names, x_train, x_test, dataset_name,
 
 
 # LIME explanation framework, takes four parameters as np.array and the black-box model
-def lime_explainer(model, x_train, x_test, feature_labels, target_label, dataset_name, id=None):
+def lime_explainer(model, x_train, x_test, feature_labels, target_label, dataset_name, model_name, id=None):
     # if isinstance(x_train, np.float64)
     explainer = lime.lime_tabular.LimeTabularExplainer(x_train, feature_names=feature_labels, class_names=target_label,
                                                        discretize_continuous=False)
     if id is None:
         np.random.randint(0, x_test.shape[0])
 
-    exp = explainer.explain_instance(x_test[3], model.predict_proba, num_features=len(feature_labels))
+    exp = explainer.explain_instance(x_test[0], model.predict_proba, num_features=len(feature_labels))
     # exp.show_in_notebook(show_table=True, show_all=False)
-    exp.save_to_file("results/explanations/" + dataset_name + "/lime_explanation.html")
+    exp.save_to_file("results/explanations/" + dataset_name + "/lime_explanation_" + model_name + ".html")
 
 
 # SHAP explanation framework, takes four parameters as np.array and the black-box model
-def shap_explainer(model, x, feature_names, dataset_name, multioutput=False):
+def shap_explainer(model, x, feature_names, dataset_name, model_name, multioutput=False):
     shap.initjs()
     data = pd.DataFrame(x, columns=feature_names)
     # explainer = shap.KernelExplainer(model.predict_proba, data)
     plt.pyplot.clf()
-
+    plt.pyplot.close("all")
 # shap_values = explainer_tree.shap_values(data)
     if multioutput:
         explainer = shap.KernelExplainer(model.predict_proba, data)
         shap_values = explainer.shap_values(data)
         # fig = shap.waterfall(explainer_tree.expected_value[0], shap_values[0], x, show=False)
         shap.summary_plot(shap_values, data, class_names=model.classes_, show=False)
-        plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_summary.png", bbox_inches="tight")
+        plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_summary_" + model_name + ".png", dpi=1200, bbox_inches="tight")
         plt.pyplot.clf()
+        plt.pyplot.close("all")
         # shap.waterfall_plot(explainer.expected_value[0], shap_values[0][0], show=False)
         shap.force_plot(explainer.expected_value[0], shap_values[0], data)
-        plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_force.png", bbox_inches="tight")
+        plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_force_" + model_name + ".png", dpi=1200, bbox_inches="tight")
         plt.pyplot.clf()
+        plt.pyplot.close("all")
     else:
         #masker = shap.maskers.Independent(data, 10)
 
@@ -285,42 +296,42 @@ def shap_explainer(model, x, feature_names, dataset_name, multioutput=False):
         #shap.plots.waterfall(shap_values[0], show=False)
         #plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_waterfall.png", bbox_inches="tight")
         plt.pyplot.clf()
+        plt.pyplot.close("all")
         # fig = shap.force_plot(explainer_tree.expected_value, shap_values[0, :], x[0, :])
         # plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_force_plot.png")
         # plt.pyplot.clf()
         #
         #IMPORTANCIA DE APENAS UMA CLASSE, NAO SERVE BEM PARA MULTIOUTPUT
         shap.plots.bar(shap_values[:, :, 1], show=False)
-        plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_bar_1_plot.png", bbox_inches="tight")
+        plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_bar_1_plot_" + model_name + ".png", dpi=1200, bbox_inches="tight")
         plt.pyplot.clf()
 
         shap.summary_plot(shap_values[:, :, 1], x, plot_type="bar", show=False)
         # fig = shap.summary_plot(shap_values.shap_values(data), data, plot_type="bar", show=False)
-        plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_summary_plot.png", bbox_inches="tight")
+        plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_summary_plot_" + model_name + ".png", dpi=1200, bbox_inches="tight")
         plt.pyplot.clf()
+        plt.pyplot.close("all")
+
 
 
         # Feature interactions is not useful...
         # fig = shap.summary_plot(shap_interactions, data, show=False)
-        for feat in feature_names:
-            # fig = shap.plots.scatter(shap_values.shap_values(data)[:, feat], show=False)
-            shap.plots.scatter(shap_values[:, feat, 1], show=False)
-            plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_scatter_" + feat + ".png",
-                               bbox_inches="tight")
-            plt.pyplot.clf()
+        #for feat in feature_names:
+        #    # fig = shap.plots.scatter(shap_values.shap_values(data)[:, feat], show=False)
+        #    shap.plots.scatter(shap_values[:, feat, 1], show=False)
+        #    plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_scatter_" + model_name + feat + ".png",
+        #                       bbox_inches="tight")
+        #    plt.pyplot.clf()
 
         # shap.plots.force(explainer.expected_value, shap_values[0], data.iloc[0,:], show=False)
         # plt.pyplot.savefig("results/explanations/"+dataset_name+"/shap_force.png")
         # plt.pyplot.clf()
         shap.plots.bar(shap_values[:, :, 1], show=False)
-        plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_barplot.png", bbox_inches="tight")
+        plt.pyplot.savefig("results/explanations/" + dataset_name + "/shap_barplot_" + model_name + ".png", dpi=1200, bbox_inches="tight")
         plt.pyplot.clf()
 
 
-def clear_explainer():
-    print("test")
-
-def dice_explainer(train_dataset, model, continuous_features, target_name, classes, dataset_name):
+def dice_explainer(train_dataset, x_test, model, continuous_features, target_name, classes, dataset_name, model_name):
     # Dataset for training an ML model
     d = models.DiCE.dice_ml.Data(dataframe=train_dataset,
                      continuous_features=continuous_features,
@@ -337,23 +348,23 @@ def dice_explainer(train_dataset, model, continuous_features, target_name, class
                 e1.visualize_as_dataframe()
 
         else:
-            e1 = exp.generate_counterfactuals(train_dataset[2:3].drop([target_name], axis=1), total_CFs=3, desired_class="opposite",  features_to_vary=continuous_features)
+            e1 = exp.generate_counterfactuals(x_test[0:1], total_CFs=3, desired_class="opposite",  features_to_vary=continuous_features)
             e1.cf_examples_list[0].test_instance_df
             e1.visualize_as_dataframe()
 
 
         final_data = []
         final_data.append("Original Instance\n")
-        final_data.append(train_dataset.columns)
+        final_data.append(x_test.columns)
         final_data.append("\n")
 
         final_data.append(e1.cf_examples_list[0].test_instance_df.values)
         final_data.append("\nCounterfactuals Generated\n")
         final_data.append(e1.cf_examples_list[0].final_cfs_df.values)
-        af.save_to_file_2("results/explanations/" + dataset_name + "/dice_counterfactuals.txt", final_data)
+        af.save_to_file_2("results/explanations/" + dataset_name + "/dice_counterfactuals_"+ model_name + ".txt", final_data)
         final_data = pd.DataFrame(e1.cf_examples_list[0].final_cfs_df)
         final_data = final_data.append(e1.cf_examples_list[0].test_instance_df)
-        final_data.to_csv(path_or_buf='results/explanations/'+dataset_name+'/dice_counterfactuals.csv', index=False)
+        final_data.to_csv(path_or_buf='results/explanations/'+dataset_name+'/dice_counterfactuals_' + model_name + '.csv', index=False)
     except:
         print("No counterfactual explanations for given instance")
 

@@ -1,7 +1,0 @@
----Data info---
-                 Test
-Accuracy         0.74
-F1_Score         0.42
-Precision_Score  0.40
-Recall_Score     0.43
----Data Description---

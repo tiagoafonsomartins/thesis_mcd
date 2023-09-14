@@ -1,7 +1,0 @@
----Data info---
-                 Train
-Accuracy          0.99
-F1_Score          0.97
-Precision_Score   0.99
-Recall_Score      0.96
----Data Description---
