@@ -10,6 +10,8 @@
       <excludeFolder url="file://$MODULE_DIR$/models/CLEAR/venv" />
       <excludeFolder url="file://$MODULE_DIR$/models/anchor/venv" />
       <excludeFolder url="file://$MODULE_DIR$/models/PermuteAttack/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/venv312" />
+      <excludeFolder url="file://$MODULE_DIR$/venv311" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -325,37 +325,35 @@ def analysis_explanation(dataset, model, dataset_cols_index, dataset_name, model
     metrics["test_closure"] = len(list(filter(lambda y: y == 0, y_test)))
     metrics["test_cancelled"] = len(list(filter(lambda y: y == 1, y_test)))
 
-    #with open("results/number_feat_train_test/"+dataset_name+".txt", 'w') as file:
-    #    file.write("# cancellations in training data: "+str(len(list(filter(lambda y: y == 1, y_train))))+"\n"+
-    #               "# closures in training data: "+str(len(list(filter(lambda y: y == 0, y_train))))+"\n"+
-    #               "# cancellations in test data: "+str(len(list(filter(lambda y: y == 1, y_test))))+"\n"+
-    #               "# closures in test data: "+str(len(list(filter(lambda y: y == 0, y_test))))+"\n" +
-    #               "#previous number of cancellations in training before SMOTE:" + str(len(list(filter(lambda y: y == 1, y_train)))))
-    #date_begin = datetime.now()
+    if model_name == "dt":
+        fig = plt.figure(figsize=(25, 20))
+        _ = tree.plot_tree(model.fit(x_test, y_test),
+                           feature_names=dataset.drop(target_name, axis=1).columns, class_names=True, proportion =True,
+                           filled=True, max_depth=5)
+        fig.savefig("results/explanations/"+dataset_name+"-decision_tree.svg")
+        plt.clf()
 
+    elif model_name == "xgboost":
+        model.set_params({"early_stopping_rounds": [10]})
+        model.fit(x_train, y_train)
 
-    if model_name != "xgboost":
+        fig = plt.figure(figsize=(25, 20))
+        _ = xgboost.plot_importance(model)
+        fig.savefig("results/explanations/"+dataset_name+"-xgboost_feat_importance.svg")
+        plt.clf()
+
+        fig = plt.figure(figsize=(25, 20))
+        _ = xgboost.plot_tree(model, num_trees=3)
+        fig.savefig("results/explanations/"+dataset_name+"-xgboost_trees.svg")
+        plt.clf()
+        date_end = datetime.now()
+
+    else:
         try:
             model.fit(x_train, y_train)
             date_end = datetime.now()
         except:
             print("failed to fit")
-
-    # exp.anchor_explainer(model, dataset, target_idx, dataset.columns, dataset_cols_index,
-        #                     cat_cols, dataset_name)
-    else:
-        model.set_params({"early_stopping_rounds": [10]})
-        date_end = datetime.now()
-
-        model.fit(x_train, y_train)
-
-    if model_name == "dt":
-        fig = plt.figure(figsize=(25, 20))
-        _ = tree.plot_tree(model.fit(x_test, y_test),
-                           feature_names=dataset.drop(target_name, axis=1).columns, class_names=True, proportion =True,
-                           filled=True)
-        fig.savefig("results/explanations/"+dataset_name+"-decision_tree.svg")
-        plt.clf()
 
 
     #duration_s = (date_end - date_begin).total_seconds()
@@ -443,10 +441,6 @@ def model_constructor(parameters):
                                                                  max_iter=parameters[original_par_order.index("logistic_regressor")]["max_iter"],
                                                                  solver=parameters[original_par_order.index("logistic_regressor")]["solver"],
                                                                  random_state=random_seed)
-
-    #svm_classifier = sklearn.svm.SVC(C=parameters[original_par_order.index("svc")]["C"],
-    #                                gamma=parameters[original_par_order.index("svc")]["gamma"],
-    #                                kernel=parameters[original_par_order.index("svc")]["kernel"])#probability=True)
 
     gaussian_naive_bayes = GaussianNB(var_smoothing=parameters[original_par_order.index("gnb")]["var_smoothing"])
 
@@ -664,48 +658,12 @@ german_num_cols = ["duration", "amount", "installment_rate", "residence_since", 
                    "liable_to_maintenance"]
 
 # Read the 2 public datasets
-default_credit = pd.read_csv("default_credit-vFINAL.csv", index_col=None, delimiter=';', header=0)
+default_credit = pd.read_csv("datasets/default_credit_scaled.csv", index_col=None, delimiter=';', header=0)
 default_credit_initial = pd.read_csv("datasets/default of credit card clients.csv", delimiter=';', header=0)
 default_credit_initial.columns = default_credit_columns_initial
-german_credit = pd.read_csv("german_scaled.csv", delimiter=';', header=0)
-
-iapmei_cols = ['Gini Index NUTS', 'Company closure NUTS', 'Population density NUTS',
-               'College Network NUTS', 'Number of SME NUTS', 'Mean salary NUTS',
-               'Unemployment rate NUTS', 'Poverty rate NUTS', 'Number of workers',
-               'Investment (€)', 'Value of training',
-               'Historical frequency of cancellation CAE',
-               'Historical frequency of cancellation NUTS', 'Mean turnover', 'Asset',
-               'Turnover', 'Liabilities (credit)', 'Liquidity', 'Equity',
-               'Net profit or loss', 'Financial mean turnover', 'Young company',
-               'Expenses - IT', 'Expenses - Civil construction',
-               'Expenses - Engineering services', 'Expenses - Equipment',
-               'Expenses - Other', 'Weight - Equity', 'Weight - Self-financing',
-               'Weight - Foreign capital', 'Weight - Partners',
-               'Weight - Total incentive', 'Weight - Reimbursable incentive',
-               'Eligibility (%)', 'Errors in weights', 'Project cancelled',
-               'Is micro enterprise', 'Is small company', 'Is medium company']
+german_credit = pd.read_csv("datasets/german_scaled.csv", delimiter=';', header=0)
 
 
-iapmei_cols_cont = ['Gini Index NUTS', 'Company closure NUTS', 'Population density NUTS',
-                    'College Network NUTS', 'Number of SME NUTS', 'Mean salary NUTS',
-                    'Unemployment rate NUTS', 'Poverty rate NUTS', 'Number of workers',
-                    'Investment (€)', 'Value of training',
-                    'Historical frequency of cancellation CAE',
-                    'Historical frequency of cancellation NUTS', 'Mean turnover', 'Asset',
-                    'Turnover', 'Liabilities (credit)', 'Liquidity', 'Equity',
-                    'Net profit or loss', 'Financial mean turnover', 'Young company',
-                    'Expenses - IT', 'Expenses - Civil construction',
-                    'Expenses - Engineering services', 'Expenses - Equipment',
-                    'Expenses - Other', 'Weight - Equity', 'Weight - Self-financing',
-                    'Weight - Foreign capital', 'Weight - Partners',
-                    'Weight - Total incentive', 'Weight - Reimbursable incentive',
-                    'Eligibility (%)', 'Errors in weights']
-
-iapmei_cols_cat = ["NUTS II of Project = NUTS II of head office", 'Is micro enterprise', 'Is small company', 'Is medium company'
-                   ]
-
-
-dataset_names = "iapmei-baseline-todas-c-ies"
 sampler_lst = [
     None,
     "Under",
@@ -732,7 +690,6 @@ seeds = [
 def pipeline(is_iapmei, smote, dataset_name, dataset_folder, cols_idx, target, target_idx, original_target_values, replacer,
              cat_cols, cat_cols_idx, cont_cols):
     initial_seed = 0
-    global_metrics = pd.DataFrame(columns=["sample method", "seed", "total time in gridsearch (s)", "total time in prediction-analysis (s)"])
     method_metrics = pd.DataFrame(columns=["sampler","seed","model","roc_auc","accuracy","f_score","precision",
                                            "recall","roc_auc","accuracy","f_score", "f_score - weighted", "f_score - macro", "precision","recall","TN","FP",
                                            "FN","TP","Closures on train before sampler","Cancellations on train before sampler",
@@ -796,20 +753,15 @@ def pipeline(is_iapmei, smote, dataset_name, dataset_folder, cols_idx, target, t
                 i += 1
             pred_exp_exec_end = datetime.now()
             pred_exp_exec_diff = (pred_exp_exec_end - pred_exp_exec_start).total_seconds()
-            global_metrics.loc[len(global_metrics)] = [str(sampler), str(seed), grid_search_diff, pred_exp_exec_diff] #para todos os modelos exp. e pred. o tempo gasto em tudo
 
 
         method_metrics.to_excel("results/model_performance/eval_bymodel-"+dataset_name+smote+"-"+str(sampler)+"-seed-"+str(seed)+".xlsx")
 
-    global_metrics.to_excel("results/model_performance/eval_global-"+dataset_name+smote+".xlsx")
 
-
-pipeline(True, "-EXP-v18", "iapmei-baseline-todas-c-ies", "dataset_iapmei/", list(range(0,40)), "Project cancelled", 35, None,
-         [0, 1], ["NUTS II of Project = NUTS II of head office", 'Is micro enterprise', 'Is small company', 'Is medium company'],
-         [36, 37, 38, 39], iapmei_cols_cont)
-
-pipeline(False, "-EXP-GERMAN-v3", "german_scaled", "", german_credit_index, "Risk", 11,
+pipeline(False, "_post-dissertation", "datasets/german_scaled", "", german_credit_index, "Risk", 11,
          ['1', '2'], [0, 1], german_cat_cols, german_credit_cat_cols_index, german_cont_cols)
 
-pipeline(False, "-EXP-DEFAULT-CREDIT-v3", "default_credit-vFINAL", "", default_credit_index_sc, "Y", 9, None,
+
+sys.exit(0)
+pipeline(False, "_post-dissertation", "datasets/default_credit_scaled", "", default_credit_index_sc, "Y", 9, None,
          [0, 1], default_credit_cat_sc, default_credit_cat_index_sc, default_credit_cont_cols_sc)

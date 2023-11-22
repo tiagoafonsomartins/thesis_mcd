@@ -6,3 +6,5 @@ build
 dist
 thesis_mcd.egg-info
 venv
+.idea/thesis_mcd.iml
+.idea/misc.xml
