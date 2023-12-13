@@ -1,4 +1,8 @@
 # thesis_mcd
+
+This is the code used for my dissertation, and it was made public to help in the dissemination of the research area known as XAI. The authors of each XAI method used are properly referenced in the dissertation, but the main purpose of the usage of several, novel techniques is to provide practical examples on how these methods can be implemented in real-world scenarios.
+
+
 ## Data processing 
 Data processing was made on Jupyter Notebook and can be found in the folder "data processing":
   **German credit** - inside EXP 1-2
